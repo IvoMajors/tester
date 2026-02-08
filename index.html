@@ -152,32 +152,81 @@
       color: var(--muted);
     }
 
-    .metrics {
+    .results-shell {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid #e7ecf3;
+    }
+
+    .results-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
 
-    .metric {
-      border-radius: 14px;
-      background: #f8fafc;
-      border: 1px solid #eef2f7;
-      padding: 16px 16px 14px;
+    @media (max-width: 520px) {
+      .results-cards { grid-template-columns: 1fr; }
     }
 
-    .metric span {
-      display: block;
+    .results-under {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 520px) {
+      .results-under { grid-template-columns: 1fr; }
+    }
+
+    .result-card {
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 10px 22px rgba(13, 27, 42, 0.06);
+    }
+
+    .result-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #eef2ff;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .result-label {
       font-size: 13px;
-      color: var(--muted);
+      color: #334155;
       letter-spacing: 0.01em;
     }
 
-    .metric strong {
-      display: block;
+    .result-value {
+      font-size: 34px;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      color: #0d1b2a;
       margin-top: 6px;
-      font-size: 30px;
-      letter-spacing: -0.02em;
+      line-height: 1.0;
     }
+
+    .result-unit {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .verdict-good .result-icon { background: #eafff6 !important; }
+    .verdict-good .result-value { color: #0f5132; }
+    .verdict-bad .result-icon { background: #fff7ed !important; }
+    .verdict-bad .result-value { color: #7c2d12; }
 
     .chart-wrap {
       display: grid;
@@ -299,7 +348,7 @@
         <div class="inputs">
           <div class="input-row">
             <label for="controlSize">Control group size</label>
-            <input id="controlSize" type="number" min="1" value="1200" />
+            <input id="controlSize" type="number" min="1" value="1000" />
           </div>
           <div class="input-row">
             <label for="controlConv">Control conversions</label>
@@ -307,7 +356,7 @@
           </div>
           <div class="input-row">
             <label for="testSize">Test group size</label>
-            <input id="testSize" type="number" min="1" value="1180" />
+            <input id="testSize" type="number" min="1" value="1000" />
           </div>
           <div class="input-row">
             <label for="testConv">Test conversions</label>
@@ -322,7 +371,7 @@
         <div class="chart-wrap">
           <h2>Results</h2>
           <div class="chart-title">
-            <h3>Control vs Test</h3>
+            <h3>Lift</h3>
           </div>
           <div class="chart small">
             <svg id="bars" viewBox="0 0 600 220" width="100%" height="100%" role="img" aria-label="Control vs test conversion rates">
@@ -335,12 +384,92 @@
           <div class="chart-title">
             <h3>Analysis</h3>
           </div>
-          <div class="metrics" id="metrics">
-            <div class="metric"><span>Observed Lift</span><strong id="lift">—</strong></div>
-            <div class="metric"><span>Standard Error</span><strong id="se">—</strong></div>
-            <div class="metric"><span>Z-Score</span><strong id="zscore">—</strong></div>
-            <div class="metric"><span>P-Score</span><strong id="pscore">—</strong></div>
-            <div class="metric"><span>Confidence</span><strong id="confidence">—</strong></div>
+          <div class="results-shell">
+            <div class="results-cards" id="metrics">
+              <div class="result-card">
+                <div class="result-icon" style="background:#eafff6">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h12" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round"/>
+                    <path d="M13 6l6 6-6 6" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="result-label">Observed Lift (Signal)</div>
+                  <div class="result-value" id="lift">—</div>
+                  <div class="result-unit">percentage points</div>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-icon" style="background:#eef2ff">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3v10" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M8 13c.9 1.2 2.2 2 4 2s3.1-.8 4-2" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M6 21h12" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="result-label">Market Noise (Standard Error)</div>
+                  <div class="result-value" id="se">—</div>
+                  <div class="result-unit">percentage points</div>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-icon" style="background:#f1f5f9">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M10 18a8 8 0 1 1 5.3-14" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M16 16l5 5" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="result-label">Signal-to-Noise (Z-Score)</div>
+                  <div class="result-value" id="zscore">—</div>
+                  <div class="result-unit">standard deviations</div>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-icon" style="background:#fff7ed">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 17v.01" stroke="#ea580c" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M9.1 9.4a3.2 3.2 0 1 1 5.2 2.5c-.9.6-1.3 1.1-1.3 2.1v.4" stroke="#ea580c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" stroke="#ea580c" stroke-width="2.0" opacity="0.25"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="result-label">Risk of Chance (P-Value)</div>
+                  <div class="result-value" id="pscore">—</div>
+                  <div class="result-unit">two-tailed probability</div>
+                </div>
+              </div>
+            </div>
+            <div class="results-under">
+              <div class="result-card">
+                <div class="result-icon" style="background:#f1f5ff">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3v18" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M7 8h10" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M7 16h10" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="result-label">Confidence</div>
+                  <div class="result-value" id="confidence">—</div>
+                  <div class="result-unit">confidence level (1 - p-value)</div>
+                </div>
+              </div>
+              <div class="result-card" id="verdictCard">
+                <div class="result-icon" style="background:#f1f5f9">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 12l2 2 4-5" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" stroke="#16a34a" stroke-width="2.0" opacity="0.22"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="result-label">Verdict</div>
+                  <div class="result-value" id="verdict">—</div>
+                  <div class="result-unit">statistical significance at 95% (p &lt; 0.05)</div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="chart">
             <svg id="curve" viewBox="0 0 600 240" width="100%" height="100%" role="img" aria-label="Normal distribution">
@@ -417,6 +546,8 @@
     const zEl = document.getElementById('zscore');
     const pEl = document.getElementById('pscore');
     const confidenceEl = document.getElementById('confidence');
+    const verdictEl = document.getElementById('verdict');
+    const verdictCard = document.getElementById('verdictCard');
     const commentary = document.getElementById('commentary');
     const tailLegend = document.getElementById('tailLegend');
     const expLift = document.getElementById('expLift');
@@ -473,9 +604,19 @@
       return val.toFixed(4);
     }
 
+    function formatPPValue(val) {
+      if (!isFinite(val)) return '—';
+      return (val * 100).toFixed(2);
+    }
+
     function formatPP(val) {
       if (!isFinite(val)) return '—';
       return `${(val * 100).toFixed(2)} pp`;
+    }
+
+    function formatPercentValue(val) {
+      if (!isFinite(val)) return '—';
+      return `${(val * 100).toFixed(2)}%`;
     }
 
     function escapeText(text) {
@@ -730,11 +871,16 @@
       const pValue = 2 * (1 - normalCdf(Math.abs(z)));
       const confidence = 1 - pValue;
 
-      liftEl.textContent = formatPP(delta);
-      seEl.textContent = formatPP(se);
-      zEl.textContent = formatNumber(z);
-      pEl.textContent = formatNumber(pValue);
-      confidenceEl.textContent = formatPercent(confidence);
+      liftEl.textContent = formatPPValue(delta);
+      seEl.textContent = formatPPValue(se);
+      zEl.textContent = `${(isFinite(z) ? z : 0).toFixed(2)}x`;
+      pEl.textContent = formatPercentValue(pValue);
+      confidenceEl.textContent = formatPercentValue(confidence);
+
+      const isSignificant = pValue < 0.05;
+      verdictEl.textContent = isSignificant ? 'Significant' : 'Not significant';
+      verdictCard.classList.toggle('verdict-good', isSignificant);
+      verdictCard.classList.toggle('verdict-bad', !isSignificant);
 
       commentary.textContent = interpret(pValue, lift);
       tailLegend.textContent = 'Two-tailed p-value area';
