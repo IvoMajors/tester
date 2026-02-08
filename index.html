@@ -68,6 +68,7 @@
     h2 {
       margin: 0 0 8px 0;
       font-size: 20px;
+      font-weight: 700;
     }
 
     .tagline {
@@ -98,14 +99,55 @@
       gap: 14px;
     }
 
+    .group-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .group-box {
+      border: 1px solid #e7ecf3;
+      background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .group-box h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #334155;
+    }
+
     .input-row {
       display: grid;
       gap: 8px;
     }
 
+    .input-row + .input-row {
+      margin-top: 6px;
+    }
+
     label {
       font-weight: 600;
       font-size: 14px;
+    }
+
+    label .tip-target {
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      margin-left: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #334155;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      vertical-align: middle;
+      line-height: 1;
     }
 
     input[type="number"] {
@@ -204,14 +246,14 @@
 
     .result-label {
       font-size: 13px;
-      color: #334155;
+      color: #475569;
       letter-spacing: 0.01em;
     }
 
     .result-value {
-      font-size: 34px;
+      font-size: 30px;
       letter-spacing: -0.03em;
-      font-weight: 800;
+      font-weight: 700;
       color: #0d1b2a;
       margin-top: 6px;
       line-height: 1.0;
@@ -224,7 +266,7 @@
     }
 
     .verdict-good .result-icon { background: #eafff6 !important; }
-    .verdict-good .result-value { color: #0f5132; }
+    .verdict-good .result-value { color: #14532d; }
     .verdict-bad .result-icon { background: #fff7ed !important; }
     .verdict-bad .result-value { color: #7c2d12; }
 
@@ -258,7 +300,8 @@
       font-size: 14px;
       letter-spacing: 0.01em;
       text-transform: uppercase;
-      color: #334155;
+      color: #475569;
+      font-weight: 600;
     }
 
     .chart-title .subnote {
@@ -282,6 +325,30 @@
       margin-right: 6px;
     }
 
+    .tip-target { cursor: help; }
+
+    .tooltip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 320px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(13, 27, 42, 0.92);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      line-height: 1.35;
+      box-shadow: 0 18px 40px rgba(13, 27, 42, 0.25);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+
+    .tooltip.on {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .commentary {
       background: #fff7ed;
       border-radius: 14px;
@@ -291,27 +358,15 @@
       line-height: 1.5;
     }
 
-    .explain {
+    .commentary ul {
+      margin: 0;
+      padding-left: 18px;
       display: grid;
-      gap: 12px;
-      margin-top: 10px;
+      gap: 6px;
     }
 
-    .explain-item {
-      background: #f9fbff;
-      border: 1px solid #e3ebf7;
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 13px;
-      color: #263244;
-      line-height: 1.5;
-    }
-
-    .explain-item strong {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: #0d1b2a;
+    .commentary li {
+      margin: 0;
     }
 
     .footer {
@@ -344,23 +399,31 @@
     <div class="grid">
       <section class="panel">
         <h2>Campaign Inputs</h2>
-        <p class="note">Provide conversions and audience size for control and test groups.</p>
+        <p class="note">Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
-          <div class="input-row">
-            <label for="controlSize">Control group size</label>
-            <input id="controlSize" type="number" min="1" value="1000" />
-          </div>
-          <div class="input-row">
-            <label for="controlConv">Control conversions</label>
-            <input id="controlConv" type="number" min="0" value="120" />
-          </div>
-          <div class="input-row">
-            <label for="testSize">Test group size</label>
-            <input id="testSize" type="number" min="1" value="1000" />
-          </div>
-          <div class="input-row">
-            <label for="testConv">Test conversions</label>
-            <input id="testConv" type="number" min="0" value="150" />
+          <div class="group-grid">
+            <div class="group-box">
+              <h3>Control Group</h3>
+              <div class="input-row">
+                <label for="controlSize">Sample Size (n₁)</label>
+                <input id="controlSize" type="number" min="1" value="500" />
+              </div>
+              <div class="input-row">
+                <label for="controlConv">Number of Successes (x₁) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded.">?</span></label>
+                <input id="controlConv" type="number" min="0" value="120" />
+              </div>
+            </div>
+            <div class="group-box">
+              <h3>Test Group</h3>
+              <div class="input-row">
+                <label for="testSize">Sample Size (n₂)</label>
+                <input id="testSize" type="number" min="1" value="500" />
+              </div>
+              <div class="input-row">
+                <label for="testConv">Number of Successes (x₂) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded.">?</span></label>
+                <input id="testConv" type="number" min="0" value="150" />
+              </div>
+            </div>
           </div>
           <button class="btn" id="calcBtn">Calculate significance</button>
           <div class="note" id="validation"></div>
@@ -386,7 +449,7 @@
           </div>
           <div class="results-shell">
             <div class="results-cards" id="metrics">
-              <div class="result-card">
+              <div class="result-card tip-target" id="tileLift" data-tip="">
                 <div class="result-icon" style="background:#eafff6">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M5 12h12" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round"/>
@@ -399,7 +462,7 @@
                   <div class="result-unit">percentage points</div>
                 </div>
               </div>
-              <div class="result-card">
+              <div class="result-card tip-target" id="tileSe" data-tip="">
                 <div class="result-icon" style="background:#eef2ff">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M12 3v10" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
@@ -408,12 +471,12 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Market Noise (Standard Error)</div>
+                  <div class="result-label">Standard Error (Noise)</div>
                   <div class="result-value" id="se">—</div>
                   <div class="result-unit">percentage points</div>
                 </div>
               </div>
-              <div class="result-card">
+              <div class="result-card tip-target" id="tileZ" data-tip="">
                 <div class="result-icon" style="background:#f1f5f9">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M10 18a8 8 0 1 1 5.3-14" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
@@ -426,7 +489,7 @@
                   <div class="result-unit">standard deviations</div>
                 </div>
               </div>
-              <div class="result-card">
+              <div class="result-card tip-target" id="tileP" data-tip="">
                 <div class="result-icon" style="background:#fff7ed">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M12 17v.01" stroke="#ea580c" stroke-width="3" stroke-linecap="round"/>
@@ -442,7 +505,7 @@
               </div>
             </div>
             <div class="results-under">
-              <div class="result-card">
+              <div class="result-card tip-target" id="tileConfidence" data-tip="">
                 <div class="result-icon" style="background:#f1f5ff">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M12 3v18" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
@@ -456,7 +519,7 @@
                   <div class="result-unit">confidence level (1 - p-value)</div>
                 </div>
               </div>
-              <div class="result-card" id="verdictCard">
+              <div class="result-card tip-target" id="verdictCard" data-tip="">
                 <div class="result-icon" style="background:#f1f5f9">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M9 12l2 2 4-5" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -466,28 +529,35 @@
                 <div>
                   <div class="result-label">Verdict</div>
                   <div class="result-value" id="verdict">—</div>
-                  <div class="result-unit">statistical significance at 95% (p &lt; 0.05)</div>
+                  <div class="result-unit" id="verdictUnit">—</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="chart">
-            <svg id="curve" viewBox="0 0 600 240" width="100%" height="100%" role="img" aria-label="Normal distribution">
+            <svg id="curve" viewBox="0 0 600 270" width="100%" height="100%" role="img" aria-label="Normal distribution">
               <defs>
                 <linearGradient id="shade" x1="0" x2="0" y1="0" y2="1">
                   <stop offset="0%" stop-color="#ef476f" stop-opacity="0.45" />
                   <stop offset="100%" stop-color="#ef476f" stop-opacity="0.05" />
                 </linearGradient>
+                <linearGradient id="noEffectGrad" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%" stop-color="#f3e3ee" />
+                  <stop offset="50%" stop-color="#e5e7eb" />
+                  <stop offset="100%" stop-color="#e1f3ea" />
+                </linearGradient>
               </defs>
               <g id="noiseBands"></g>
-              <path id="shadeLeft" fill="url(#shade)" opacity="0.9" />
-              <path id="shadeRight" fill="url(#shade)" opacity="0.9" />
-              <path id="sig95Area" fill="#06d6a0" opacity="0.22" />
-              <line id="critLeft" x1="0" x2="0" y1="46" y2="210" stroke="#06d6a0" stroke-width="2" stroke-dasharray="6 6" opacity="0.45" />
-              <line id="critRight" x1="0" x2="0" y1="46" y2="210" stroke="#06d6a0" stroke-width="2" stroke-dasharray="6 6" opacity="0.45" />
+              <path id="shadeLeft" fill="#f472b6" opacity="0.30" />
+              <path id="shadeRight" fill="#16a34a" opacity="0.24" />
+              <path id="sig95Area" fill="url(#noEffectGrad)" opacity="0.85" />
+              <line id="critLeft" x1="0" x2="0" y1="46" y2="210" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 6" opacity="0.55" />
+              <line id="critRight" x1="0" x2="0" y1="46" y2="210" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 6" opacity="0.55" />
               <path id="curvePath" fill="none" stroke="#0d1b2a" stroke-width="3" />
-              <line id="zLine" x1="300" x2="300" y1="30" y2="210" stroke="#118ab2" stroke-width="3" stroke-linecap="round" />
-              <text id="zLabel" x="300" y="26" text-anchor="middle" font-size="12" fill="#118ab2">z = 0</text>
+              <line id="zLine" x1="300" x2="300" y1="74" y2="210" stroke="#118ab2" stroke-width="3" stroke-linecap="round" />
+              <circle id="zDot" cx="300" cy="50" r="24" fill="#ffffff" stroke="#118ab2" stroke-width="3" />
+              <text id="zDotText" x="300" y="51" text-anchor="middle" font-size="12" fill="#118ab2" font-weight="900">0.00</text>
+              <text id="zDotSub" x="300" y="66" text-anchor="middle" font-size="10" fill="#118ab2" font-weight="800">Z</text>
               <g id="ticks" fill="none" stroke="#c5ced9" stroke-width="2" opacity="0.95">
                 <line x1="40" x2="560" y1="210" y2="210" />
                 <line x1="40" x2="40" y1="210" y2="218" />
@@ -511,28 +581,31 @@
                 <text x="495" y="232" text-anchor="middle">3</text>
                 <text x="560" y="232" text-anchor="end">4</text>
               </g>
+              <g id="noEffectLabel">
+                <text x="300" y="256" text-anchor="middle" font-size="12" fill="#475569" font-weight="800">No Clear Effect</text>
+                <text x="300" y="272" text-anchor="middle" font-size="11" fill="#94a3b8" font-weight="600">expected by chance</text>
+                <text id="negLabel" x="160" y="256" text-anchor="middle" font-size="12" fill="#475569" font-weight="800">Negative Effect</text>
+                <text id="posLabel" x="440" y="256" text-anchor="middle" font-size="12" fill="#475569" font-weight="800">Positive Effect</text>
+              </g>
+              <g id="hitLayer">
+                <path id="hitSig95" class="tip-target" fill="transparent" data-tip="Z values closer to 0 mean the result looks more like random noise (no clear measured effect). Outside this zone, the measured effect is statistically significant (95%, two-tailed)."></path>
+                <path id="hitPLeft" class="tip-target" fill="transparent" data-tip="Statistically significant zone: outcomes in the tails (outside ±1.96) are rare by chance alone at the 95% level (two-tailed). Farther from 0 (larger |Z|) means a smaller p-value (lower chance the result is just noise)."></path>
+                <path id="hitPRight" class="tip-target" fill="transparent" data-tip="Statistically significant zone: outcomes in the tails (outside ±1.96) are rare by chance alone at the 95% level (two-tailed). Farther from 0 (larger |Z|) means a smaller p-value (lower chance the result is just noise)."></path>
+                <line id="hitZLine" class="tip-target" x1="300" x2="300" y1="30" y2="210" stroke="transparent" stroke-width="18" data-tip="Observed Z-score: how many 'noise units' away from no clear effect. If |Z| > 1.96, the result is statistically significant at 95% (two-tailed)."></line>
+                <line id="hitCritLeft" class="tip-target" x1="0" x2="0" y1="46" y2="210" stroke="transparent" stroke-width="14" data-tip="95% cutoff (z = -1.96). Crossing this line means the result is significant at 95% (two-tailed)."></line>
+                <line id="hitCritRight" class="tip-target" x1="0" x2="0" y1="46" y2="210" stroke="transparent" stroke-width="14" data-tip="95% cutoff (z = +1.96). Crossing this line means the result is significant at 95% (two-tailed)."></line>
+              </g>
             </svg>
           </div>
-          <div class="legend">
-            <div><span class="dot" style="background:#118ab2"></span>Observed Z</div>
-            <div><span class="dot" style="background:rgba(17,138,178,0.25)"></span>Noise (expected variation)</div>
-            <div><span class="dot" style="background:rgba(6,214,160,0.35)"></span>95% region</div>
-            <div><span class="dot" style="background:#ef476f"></span><span id="tailLegend">Two-tailed p-value area</span></div>
-          </div>
           <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
-          <div class="explain" id="explain">
-            <div class="explain-item"><strong>Observed Lift</strong><span id="expLift">—</span></div>
-            <div class="explain-item"><strong>Standard Error (Noise)</strong><span id="expSe">—</span></div>
-            <div class="explain-item"><strong>Z-Score</strong><span id="expZ">—</span></div>
-            <div class="explain-item"><strong>P-Score</strong><span id="expP">—</span></div>
-            <div class="explain-item"><strong>Confidence</strong><span id="expConf">—</span></div>
-          </div>
         </div>
       </section>
     </div>
 
-    <div class="footer">This calculator uses a two-proportion Z test. Results are estimates and should be paired with business context.</div>
+    <div class="footer">This calculator uses a two‑proportion z‑test with a two‑tailed p‑value. An informal tool vibe coded by Ivo Majors. Not for commercial use.</div>
   </div>
+
+  <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
 
   <script>
     const controlSize = document.getElementById('controlSize');
@@ -548,14 +621,13 @@
     const confidenceEl = document.getElementById('confidence');
     const verdictEl = document.getElementById('verdict');
     const verdictCard = document.getElementById('verdictCard');
+    const verdictUnit = document.getElementById('verdictUnit');
     const commentary = document.getElementById('commentary');
-    const tailLegend = document.getElementById('tailLegend');
-    const expLift = document.getElementById('expLift');
-    const expSe = document.getElementById('expSe');
-    const expZ = document.getElementById('expZ');
-    const expP = document.getElementById('expP');
-    const expConf = document.getElementById('expConf');
-
+    const tileLift = document.getElementById('tileLift');
+    const tileSe = document.getElementById('tileSe');
+    const tileZ = document.getElementById('tileZ');
+    const tileP = document.getElementById('tileP');
+    const tileConfidence = document.getElementById('tileConfidence');
     const barsGrid = document.getElementById('barsGrid');
     const barsLayer = document.getElementById('barsLayer');
     const barsAnnot = document.getElementById('barsAnnot');
@@ -568,7 +640,18 @@
     const critLeft = document.getElementById('critLeft');
     const critRight = document.getElementById('critRight');
     const zLine = document.getElementById('zLine');
-    const zLabel = document.getElementById('zLabel');
+    const zDot = document.getElementById('zDot');
+    const zDotText = document.getElementById('zDotText');
+    const zDotSub = document.getElementById('zDotSub');
+    const hitSig95 = document.getElementById('hitSig95');
+    const hitPLeft = document.getElementById('hitPLeft');
+    const hitPRight = document.getElementById('hitPRight');
+    const hitZLine = document.getElementById('hitZLine');
+    const hitCritLeft = document.getElementById('hitCritLeft');
+    const hitCritRight = document.getElementById('hitCritRight');
+    const negLabel = document.getElementById('negLabel');
+    const posLabel = document.getElementById('posLabel');
+    const tooltip = document.getElementById('tooltip');
 
     const Z_CRIT_95 = 1.959963984540054;
 
@@ -682,7 +765,7 @@
       const connector = (x1, y1, x2, y2) => `<path d="M ${x1} ${y1} L ${x2} ${y2}" stroke="${liftColor}" stroke-width="5" stroke-linecap="round" stroke-dasharray="8 8" opacity="0.55"></path>`;
 
       const liftLabel = `${delta >= 0 ? '+' : ''}${formatPP(delta)}`;
-      const confText = `${formatPercent(confidence)} confident`;
+      const confText = `${formatPercent(confidence)} confidence`;
 
       barsAnnot.innerHTML = [
         connector(controlX1 + 10, controlTopY, liftX0 - 10, y(p1)),
@@ -734,6 +817,7 @@
 
     function setCriticalRegion() {
       sig95Area.setAttribute('d', bandAreaPath(-Z_CRIT_95, Z_CRIT_95));
+      hitSig95.setAttribute('d', bandAreaPath(-Z_CRIT_95, Z_CRIT_95));
 
       const scaleX = 520 / 8;
       const offsetX = 40;
@@ -743,6 +827,12 @@
       critLeft.setAttribute('x2', leftX);
       critRight.setAttribute('x1', rightX);
       critRight.setAttribute('x2', rightX);
+      hitCritLeft.setAttribute('x1', leftX);
+      hitCritLeft.setAttribute('x2', leftX);
+      hitCritRight.setAttribute('x1', rightX);
+      hitCritRight.setAttribute('x2', rightX);
+      negLabel.setAttribute('x', Math.max(70, leftX - 48));
+      posLabel.setAttribute('x', Math.min(530, rightX + 48));
     }
 
     function buildNoiseBands(z) {
@@ -800,8 +890,8 @@
 
       const leftBound = -4;
       const rightBound = 4;
-      const leftCut = -Math.abs(clampZ);
-      const rightCut = Math.abs(clampZ);
+      const leftCut = -Z_CRIT_95;
+      const rightCut = Z_CRIT_95;
 
       function shadePath(fromX, toX) {
         const steps = 80;
@@ -823,19 +913,81 @@
 
       shadeLeft.setAttribute('d', shadePath(leftBound, leftCut));
       shadeRight.setAttribute('d', shadePath(rightCut, rightBound));
+      hitPLeft.setAttribute('d', shadePath(leftBound, leftCut));
+      hitPRight.setAttribute('d', shadePath(rightCut, rightBound));
 
       const zx = offsetX + (clampZ + 4) * scaleX;
       zLine.setAttribute('x1', zx);
       zLine.setAttribute('x2', zx);
-      zLabel.setAttribute('x', zx);
-      zLabel.textContent = `z = ${clampZ.toFixed(2)}`;
+      zDot.setAttribute('cx', zx);
+      zDotText.setAttribute('x', zx);
+      zDotSub.setAttribute('x', zx);
+      zDotText.textContent = clampZ.toFixed(2);
+      hitZLine.setAttribute('x1', zx);
+      hitZLine.setAttribute('x2', zx);
     }
 
-    function interpret(pValue, lift) {
+    function showTooltip(text, clientX, clientY) {
+      tooltip.textContent = text;
+      tooltip.classList.add('on');
+      const pad = 12;
+      const rect = tooltip.getBoundingClientRect();
+      let x = clientX + 14;
+      let y = clientY + 14;
+      if (x + rect.width + pad > window.innerWidth) x = clientX - rect.width - 14;
+      if (y + rect.height + pad > window.innerHeight) y = clientY - rect.height - 14;
+      tooltip.style.left = `${Math.max(pad, x)}px`;
+      tooltip.style.top = `${Math.max(pad, y)}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('on');
+    }
+
+    let tipEl = null;
+    document.addEventListener('pointerover', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (!el) return;
+      tipEl = el;
+      showTooltip(el.getAttribute('data-tip') || '', e.clientX, e.clientY);
+    });
+    document.addEventListener('pointermove', (e) => {
+      if (!tipEl || !tooltip.classList.contains('on')) return;
+      showTooltip(tipEl.getAttribute('data-tip') || '', e.clientX, e.clientY);
+    });
+    document.addEventListener('pointerout', (e) => {
+      const leaving = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (!leaving) return;
+      if (tipEl === leaving) {
+        tipEl = null;
+        hideTooltip();
+      }
+    });
+
+    function interpretSummary({ delta, confidence, pValue }) {
       if (!isFinite(pValue)) return 'Enter valid group sizes and conversions to see interpretation.';
-      const significance = pValue < 0.05 ? 'statistically significant' : 'not statistically significant';
-      const liftDir = lift >= 0 ? 'increase' : 'decrease';
-      return `The test shows a ${formatPercent(Math.abs(lift))} ${liftDir} versus control and is ${significance}. A p-score below 0.05 means the result is statistically significant at the 95% confidence level. The confidence value shown is (1 - p-score) as a percent, so higher values mean stronger evidence that the lift is real.`;
+      const direction = delta >= 0 ? 'Increase' : 'Decrease';
+      const pp = formatPP(delta);
+      const conf = formatPercent(confidence);
+      const significant = pValue < 0.05;
+      const absDeltaPP = Math.abs(delta) * 100;
+      let magnitude = '';
+      if (absDeltaPP >= 1 && absDeltaPP <= 4) magnitude = 'promising';
+      if (absDeltaPP >= 5 && absDeltaPP <= 20) magnitude = 'strong';
+      if (absDeltaPP >= 21) magnitude = 'exceptional';
+      const tone = delta >= 0
+        ? (magnitude || 'small')
+        : (significant && absDeltaPP >= 3 ? 'concerning' : 'negative, but not conclusive');
+      const nextStep = significant
+        ? (delta >= 0
+          ? 'Evaluate cost effectiveness vs control group. Scale the campaign gradually and monitor downstream KPIs (CPA, LTV) to confirm durability.'
+          : 'Do not scale. Reevaluate the campaign creative, offer, and targeting before retesting.')
+        : 'Gather more data or refine targeting/creative/offer before scaling.';
+      return `<ul>
+        <li><strong>Result:</strong> ${direction} of <strong>${pp}</strong> vs control is <strong>${tone}</strong>.</li>
+        <li><strong>Confidence:</strong> <strong>${conf}</strong> is${significant ? '' : ' not'} statistically significant (p = ${pValue.toFixed(4)}).</li>
+        <li><strong>Recommendation:</strong> ${nextStep}</li>
+      </ul>`;
     }
 
     function validateInputs() {
@@ -881,18 +1033,24 @@
       verdictEl.textContent = isSignificant ? 'Significant' : 'Not significant';
       verdictCard.classList.toggle('verdict-good', isSignificant);
       verdictCard.classList.toggle('verdict-bad', !isSignificant);
+      verdictUnit.textContent = isSignificant
+        ? 'Above 95% threshold (p < 0.05)'
+        : 'Below 95% threshold (p ≥ 0.05)';
 
-      commentary.textContent = interpret(pValue, lift);
-      tailLegend.textContent = 'Two-tailed p-value area';
+      commentary.innerHTML = interpretSummary({ delta, confidence, pValue });
+      // Legend text is static in markup (and includes tooltip).
 
       const p1Text = `${c1}/${n1} = ${formatRate(p1)}`;
       const p2Text = `${c2}/${n2} = ${formatRate(p2)}`;
       const liftNote = p1 === 0 ? ' Control rate is 0, so lift uses denominator 1 to avoid division by zero.' : '';
-      expLift.textContent = `Absolute lift (pp) = p2 - p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`;
-      expSe.textContent = `Pooled rate = (${c1} + ${c2}) / (${n1} + ${n2}) = ${formatRate(pooled)}. SE (noise) = sqrt(p_pool(1 - p_pool) * (1/${n1} + 1/${n2})) = ${formatPP(se)}.`;
-      expZ.textContent = `Z = (p2 - p1) / SE. Delta = p2 - p1 = ${formatPP(delta)}. Z = ${formatPP(delta)} / ${formatPP(se)} = ${formatNumber(z)}.`;
-      expP.textContent = `Two-tailed: p = 2 * (1 - Φ(|z|)). With |z| = ${formatNumber(Math.abs(z))}, p = ${formatNumber(pValue)}.`;
-      expConf.textContent = `Confidence = 1 - p = 1 - ${formatNumber(pValue)} = ${formatPercent(confidence)}.`;
+      tileLift.setAttribute('data-tip', `Absolute lift (pp) = p2 - p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`);
+      tileSe.setAttribute('data-tip', `Pooled rate = (${c1} + ${c2}) / (${n1} + ${n2}) = ${formatRate(pooled)}. SE (noise) = sqrt(p_pool(1 - p_pool) * (1/${n1} + 1/${n2})) = ${formatPP(se)}.`);
+      tileZ.setAttribute('data-tip', `Z = (p2 - p1) / SE. Delta = p2 - p1 = ${formatPP(delta)}. Z = ${formatPP(delta)} / ${formatPP(se)} = ${formatNumber(z)}.`);
+      tileP.setAttribute('data-tip', `Two-tailed: p = 2 * (1 - Φ(|z|)). With |z| = ${formatNumber(Math.abs(z))}, p = ${formatNumber(pValue)}.`);
+      tileConfidence.setAttribute('data-tip', `Confidence = 1 - p = 1 - ${formatNumber(pValue)} = ${formatPercent(confidence)}.`);
+      verdictCard.setAttribute('data-tip', isSignificant
+        ? 'Significant: the p-value is below 0.05 (95% threshold).'
+        : 'Not significant: the p-value is at or above 0.05 (below the 95% threshold).');
       commentary.classList.remove('pulse');
       void commentary.offsetWidth;
       commentary.classList.add('pulse');
