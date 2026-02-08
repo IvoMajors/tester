@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tester — Campaign Significance</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #0d1b2a;
+      --muted: #5b6777;
+      --accent: #ef476f;
+      --accent-2: #118ab2;
+      --bg: #f7f3e9;
+      --panel: #ffffff;
+      --shadow: 0 20px 60px rgba(13, 27, 42, 0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Futura", "Trebuchet MS", "Segoe UI", sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #ffd9a1 0%, transparent 60%),
+                  radial-gradient(900px 500px at 90% 0%, #bde0fe 0%, transparent 60%),
+                  var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 32px 18px 60px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: conic-gradient(from 180deg, #ffd166, #ef476f, #118ab2, #06d6a0, #ffd166);
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,0.7);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+    }
+
+    .tagline {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(340px, 1.35fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .inputs {
+      display: grid;
+      gap: 14px;
+    }
+
+    .input-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input[type="number"] {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #dfe3ea;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #dfe3ea;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(17, 138, 178, 0.15);
+    }
+
+    .btn {
+      border: none;
+      background: linear-gradient(130deg, var(--accent), #ff9f1c);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(239, 71, 111, 0.2); }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      padding: 16px 16px 14px;
+    }
+
+    .metric span {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 30px;
+      letter-spacing: -0.02em;
+    }
+
+    .chart-wrap {
+      display: grid;
+      gap: 14px;
+    }
+
+    .chart {
+      width: 100%;
+      height: 280px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5fb 100%);
+      border: 1px solid #e7ecf3;
+      padding: 8px;
+    }
+
+    .chart.small {
+      height: 220px;
+    }
+
+    .chart-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .chart-title h3 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #334155;
+    }
+
+    .chart-title .subnote {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .commentary {
+      background: #fff7ed;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid #ffe4c4;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .explain {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .explain-item {
+      background: #f9fbff;
+      border: 1px solid #e3ebf7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #263244;
+      line-height: 1.5;
+    }
+
+    .explain-item strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #0d1b2a;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pulse {
+      animation: fadeUp 0.6s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Tester</h1>
+          <p class="tagline">Check if your campaign lift is statistically significant.</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Campaign Inputs</h2>
+        <p class="note">Provide conversions and audience size for control and test groups.</p>
+        <div class="inputs">
+          <div class="input-row">
+            <label for="controlSize">Control group size</label>
+            <input id="controlSize" type="number" min="1" value="1200" />
+          </div>
+          <div class="input-row">
+            <label for="controlConv">Control conversions</label>
+            <input id="controlConv" type="number" min="0" value="120" />
+          </div>
+          <div class="input-row">
+            <label for="testSize">Test group size</label>
+            <input id="testSize" type="number" min="1" value="1180" />
+          </div>
+          <div class="input-row">
+            <label for="testConv">Test conversions</label>
+            <input id="testConv" type="number" min="0" value="150" />
+          </div>
+          <button class="btn" id="calcBtn">Calculate significance</button>
+          <div class="note" id="validation"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="chart-wrap">
+          <h2>Results</h2>
+          <div class="chart-title">
+            <h3>Control vs Test</h3>
+          </div>
+          <div class="chart small">
+            <svg id="bars" viewBox="0 0 600 220" width="100%" height="100%" role="img" aria-label="Control vs test conversion rates">
+              <rect x="0" y="0" width="600" height="220" fill="transparent"></rect>
+              <g id="barsGrid"></g>
+              <g id="barsLayer"></g>
+              <g id="barsAnnot"></g>
+            </svg>
+          </div>
+          <div class="chart-title">
+            <h3>Analysis</h3>
+          </div>
+          <div class="metrics" id="metrics">
+            <div class="metric"><span>Observed Lift</span><strong id="lift">—</strong></div>
+            <div class="metric"><span>Standard Error</span><strong id="se">—</strong></div>
+            <div class="metric"><span>Z-Score</span><strong id="zscore">—</strong></div>
+            <div class="metric"><span>P-Score</span><strong id="pscore">—</strong></div>
+            <div class="metric"><span>Confidence</span><strong id="confidence">—</strong></div>
+          </div>
+          <div class="chart">
+            <svg id="curve" viewBox="0 0 600 240" width="100%" height="100%" role="img" aria-label="Normal distribution">
+              <defs>
+                <linearGradient id="shade" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#ef476f" stop-opacity="0.45" />
+                  <stop offset="100%" stop-color="#ef476f" stop-opacity="0.05" />
+                </linearGradient>
+              </defs>
+              <g id="noiseBands"></g>
+              <path id="shadeLeft" fill="url(#shade)" opacity="0.9" />
+              <path id="shadeRight" fill="url(#shade)" opacity="0.9" />
+              <path id="sig95Area" fill="#06d6a0" opacity="0.22" />
+              <line id="critLeft" x1="0" x2="0" y1="46" y2="210" stroke="#06d6a0" stroke-width="2" stroke-dasharray="6 6" opacity="0.45" />
+              <line id="critRight" x1="0" x2="0" y1="46" y2="210" stroke="#06d6a0" stroke-width="2" stroke-dasharray="6 6" opacity="0.45" />
+              <path id="curvePath" fill="none" stroke="#0d1b2a" stroke-width="3" />
+              <line id="zLine" x1="300" x2="300" y1="30" y2="210" stroke="#118ab2" stroke-width="3" stroke-linecap="round" />
+              <text id="zLabel" x="300" y="26" text-anchor="middle" font-size="12" fill="#118ab2">z = 0</text>
+              <g id="ticks" fill="none" stroke="#c5ced9" stroke-width="2" opacity="0.95">
+                <line x1="40" x2="560" y1="210" y2="210" />
+                <line x1="40" x2="40" y1="210" y2="218" />
+                <line x1="105" x2="105" y1="210" y2="216" />
+                <line x1="170" x2="170" y1="210" y2="216" />
+                <line x1="235" x2="235" y1="210" y2="216" />
+                <line x1="300" x2="300" y1="210" y2="218" />
+                <line x1="365" x2="365" y1="210" y2="216" />
+                <line x1="430" x2="430" y1="210" y2="216" />
+                <line x1="495" x2="495" y1="210" y2="216" />
+                <line x1="560" x2="560" y1="210" y2="218" />
+              </g>
+              <g id="tickLabels" font-size="11" fill="#5b6777">
+                <text x="40" y="232">-4</text>
+                <text x="105" y="232" text-anchor="middle">-3</text>
+                <text x="170" y="232" text-anchor="middle">-2</text>
+                <text x="235" y="232" text-anchor="middle">-1</text>
+                <text x="300" y="232" text-anchor="middle">0</text>
+                <text x="365" y="232" text-anchor="middle">1</text>
+                <text x="430" y="232" text-anchor="middle">2</text>
+                <text x="495" y="232" text-anchor="middle">3</text>
+                <text x="560" y="232" text-anchor="end">4</text>
+              </g>
+            </svg>
+          </div>
+          <div class="legend">
+            <div><span class="dot" style="background:#118ab2"></span>Observed Z</div>
+            <div><span class="dot" style="background:rgba(17,138,178,0.25)"></span>Noise (expected variation)</div>
+            <div><span class="dot" style="background:rgba(6,214,160,0.35)"></span>95% region</div>
+            <div><span class="dot" style="background:#ef476f"></span><span id="tailLegend">Two-tailed p-value area</span></div>
+          </div>
+          <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
+          <div class="explain" id="explain">
+            <div class="explain-item"><strong>Observed Lift</strong><span id="expLift">—</span></div>
+            <div class="explain-item"><strong>Standard Error (Noise)</strong><span id="expSe">—</span></div>
+            <div class="explain-item"><strong>Z-Score</strong><span id="expZ">—</span></div>
+            <div class="explain-item"><strong>P-Score</strong><span id="expP">—</span></div>
+            <div class="explain-item"><strong>Confidence</strong><span id="expConf">—</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">This calculator uses a two-proportion Z test. Results are estimates and should be paired with business context.</div>
+  </div>
+
+  <script>
+    const controlSize = document.getElementById('controlSize');
+    const controlConv = document.getElementById('controlConv');
+    const testSize = document.getElementById('testSize');
+    const testConv = document.getElementById('testConv');
+    const validation = document.getElementById('validation');
+
+    const liftEl = document.getElementById('lift');
+    const seEl = document.getElementById('se');
+    const zEl = document.getElementById('zscore');
+    const pEl = document.getElementById('pscore');
+    const confidenceEl = document.getElementById('confidence');
+    const commentary = document.getElementById('commentary');
+    const tailLegend = document.getElementById('tailLegend');
+    const expLift = document.getElementById('expLift');
+    const expSe = document.getElementById('expSe');
+    const expZ = document.getElementById('expZ');
+    const expP = document.getElementById('expP');
+    const expConf = document.getElementById('expConf');
+
+    const barsGrid = document.getElementById('barsGrid');
+    const barsLayer = document.getElementById('barsLayer');
+    const barsAnnot = document.getElementById('barsAnnot');
+
+    const curvePath = document.getElementById('curvePath');
+    const noiseBands = document.getElementById('noiseBands');
+    const shadeLeft = document.getElementById('shadeLeft');
+    const shadeRight = document.getElementById('shadeRight');
+    const sig95Area = document.getElementById('sig95Area');
+    const critLeft = document.getElementById('critLeft');
+    const critRight = document.getElementById('critRight');
+    const zLine = document.getElementById('zLine');
+    const zLabel = document.getElementById('zLabel');
+
+    const Z_CRIT_95 = 1.959963984540054;
+
+    function normalPdf(x) {
+      return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    }
+
+    function normalCdf(x) {
+      const sign = x < 0 ? -1 : 1;
+      const absX = Math.abs(x) / Math.sqrt(2);
+      const t = 1 / (1 + 0.3275911 * absX);
+      const a1 = 0.254829592;
+      const a2 = -0.284496736;
+      const a3 = 1.421413741;
+      const a4 = -1.453152027;
+      const a5 = 1.061405429;
+      const erf = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+      return 0.5 * (1 + sign * erf);
+    }
+
+    function formatPercent(val) {
+      if (!isFinite(val)) return '—';
+      return `${(val * 100).toFixed(2)}%`;
+    }
+
+    function formatNumber(val) {
+      if (!isFinite(val)) return '—';
+      return val.toFixed(4);
+    }
+
+    function formatRate(val) {
+      if (!isFinite(val)) return '—';
+      return val.toFixed(4);
+    }
+
+    function formatPP(val) {
+      if (!isFinite(val)) return '—';
+      return `${(val * 100).toFixed(2)} pp`;
+    }
+
+    function escapeText(text) {
+      return String(text).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    }
+
+    function drawBars({ n1, c1, p1, n2, c2, p2, delta, lift, se, confidence }) {
+      const W = 600;
+      const H = 220;
+      const padL = 58;
+      const padR = 20;
+      const padT = 18;
+      const padB = 46;
+      const baseY = H - padB;
+
+      const maxRate = Math.max(p1, p2, 0.0001);
+      const yMax = Math.max(0.02, maxRate * 1.25);
+      const yScale = (baseY - padT) / yMax;
+      const y = (rate) => baseY - rate * yScale;
+
+      const xControl = padL + 95;
+      const xLift = (W - padR + padL) / 2;
+      const xTest = W - padR - 95;
+      const barW = 104;
+      const liftW = 112;
+
+      const controlColor = '#4f9cff';
+      const liftColor = '#2dd4bf';
+      const testColor = '#7c3aed';
+
+      const grid = [];
+      for (const frac of [0.25, 0.5, 0.75]) {
+        const yy = padT + (baseY - padT) * frac;
+        grid.push(`<line x1="${padL}" x2="${W - padR}" y1="${yy}" y2="${yy}" stroke="#e8eef7" stroke-width="2"></line>`);
+      }
+      barsGrid.innerHTML = grid.join('');
+
+      const controlTopY = y(p1);
+      const testTopY = y(p2);
+      const controlH = Math.max(0, baseY - controlTopY);
+      const testH = Math.max(0, baseY - testTopY);
+
+      const liftFrom = p1;
+      const liftTo = p2;
+      const liftTopY = y(Math.max(liftFrom, liftTo));
+      const liftBotY = y(Math.min(liftFrom, liftTo));
+      const liftH = Math.max(2, liftBotY - liftTopY);
+      const liftY = delta >= 0 ? y(p2) : y(p1);
+
+      const controlX0 = xControl - barW / 2;
+      const controlX1 = xControl + barW / 2;
+      const liftX0 = xLift - liftW / 2;
+      const liftX1 = xLift + liftW / 2;
+      const testX0 = xTest - barW / 2;
+      const testX1 = xTest + barW / 2;
+
+      barsLayer.innerHTML = [
+        `<rect x="${controlX0}" y="${controlTopY}" width="${barW}" height="${controlH}" rx="14" fill="${controlColor}" opacity="0.95"></rect>`,
+        `<rect x="${liftX0}" y="${liftTopY}" width="${liftW}" height="${liftH}" rx="14" fill="${liftColor}" opacity="0.95"></rect>`,
+        `<rect x="${testX0}" y="${testTopY}" width="${barW}" height="${testH}" rx="14" fill="${testColor}" opacity="0.95"></rect>`,
+      ].join('');
+
+      const connector = (x1, y1, x2, y2) => `<path d="M ${x1} ${y1} L ${x2} ${y2}" stroke="${liftColor}" stroke-width="5" stroke-linecap="round" stroke-dasharray="8 8" opacity="0.55"></path>`;
+
+      const liftLabel = `${delta >= 0 ? '+' : ''}${formatPP(delta)}`;
+      const confText = `${formatPercent(confidence)} confident`;
+
+      barsAnnot.innerHTML = [
+        connector(controlX1 + 10, controlTopY, liftX0 - 10, y(p1)),
+        connector(liftX1 + 10, y(p2), testX0 - 10, testTopY),
+        `<text x="${xControl}" y="${controlTopY - 10}" text-anchor="middle" font-size="12" fill="${controlColor}" font-weight="700">${(p1 * 100).toFixed(2)}%</text>`,
+        `<text x="${xTest}" y="${testTopY - 10}" text-anchor="middle" font-size="12" fill="${testColor}" font-weight="700">${(p2 * 100).toFixed(2)}%</text>`,
+        `<text x="${xLift}" y="${liftTopY + liftH / 2 + 4}" text-anchor="middle" font-size="12" fill="#063b36" font-weight="800">${escapeText(liftLabel)}</text>`,
+        `<text x="${xControl}" y="${baseY + 26}" text-anchor="middle" font-size="12" fill="#334155" font-weight="700">Control</text>`,
+        `<text x="${xLift}" y="${baseY + 26}" text-anchor="middle" font-size="12" fill="#334155" font-weight="700">Lift</text>`,
+        `<text x="${xTest}" y="${baseY + 26}" text-anchor="middle" font-size="12" fill="#334155" font-weight="700">Test</text>`,
+        `<text x="${xLift}" y="${liftTopY + liftH + 22}" text-anchor="middle" font-size="12" fill="#0d1b2a" font-weight="800">${escapeText(confText)}</text>`,
+        `<text x="${xControl}" y="${baseY + 42}" text-anchor="middle" font-size="11" fill="#5b6777">${escapeText(`${c1}/${n1}`)}</text>`,
+        `<text x="${xTest}" y="${baseY + 42}" text-anchor="middle" font-size="11" fill="#5b6777">${escapeText(`${c2}/${n2}`)}</text>`,
+      ].join('');
+    }
+
+    function mixHex(a, b, t) {
+      const aN = a.startsWith('#') ? a.slice(1) : a;
+      const bN = b.startsWith('#') ? b.slice(1) : b;
+      const ar = parseInt(aN.slice(0, 2), 16);
+      const ag = parseInt(aN.slice(2, 4), 16);
+      const ab = parseInt(aN.slice(4, 6), 16);
+      const br = parseInt(bN.slice(0, 2), 16);
+      const bg = parseInt(bN.slice(2, 4), 16);
+      const bb = parseInt(bN.slice(4, 6), 16);
+      const rr = Math.round(ar + (br - ar) * t);
+      const rg = Math.round(ag + (bg - ag) * t);
+      const rb = Math.round(ab + (bb - ab) * t);
+      return `rgb(${rr} ${rg} ${rb})`;
+    }
+
+    function bandAreaPath(xFrom, xTo) {
+      const steps = 70;
+      const scaleX = 520 / 8;
+      const offsetX = 40;
+      const scaleY = 180;
+      const offsetY = 210;
+      let d = `M ${offsetX + (xFrom + 4) * scaleX} ${offsetY}`;
+      for (let i = 0; i <= steps; i++) {
+        const x = xFrom + (xTo - xFrom) * (i / steps);
+        const y = normalPdf(x);
+        const plotX = offsetX + (x + 4) * scaleX;
+        const plotY = offsetY - y * scaleY * 2.5;
+        d += ` L ${plotX} ${plotY}`;
+      }
+      d += ` L ${offsetX + (xTo + 4) * scaleX} ${offsetY} Z`;
+      return d;
+    }
+
+    function setCriticalRegion() {
+      sig95Area.setAttribute('d', bandAreaPath(-Z_CRIT_95, Z_CRIT_95));
+
+      const scaleX = 520 / 8;
+      const offsetX = 40;
+      const leftX = offsetX + (-Z_CRIT_95 + 4) * scaleX;
+      const rightX = offsetX + (Z_CRIT_95 + 4) * scaleX;
+      critLeft.setAttribute('x1', leftX);
+      critLeft.setAttribute('x2', leftX);
+      critRight.setAttribute('x1', rightX);
+      critRight.setAttribute('x2', rightX);
+    }
+
+    function buildNoiseBands(z) {
+      const zAbs = Math.max(0, Math.min(4, Math.abs(z)));
+      const base = '#d8f0fb';
+      const target = '#118ab2';
+      const bandDefs = [
+        { from: 0, to: 1, center: 0.5 },
+        { from: 1, to: 2, center: 1.5 },
+        { from: 2, to: 3, center: 2.5 },
+        { from: 3, to: 4, center: 3.5 },
+      ];
+
+      const pieces = [];
+      const capT = 0.10 + 0.80 * (zAbs / 4);
+      for (const band of bandDefs) {
+        const baseT = 0.10 + 0.80 * (band.center / 4);
+        const t = Math.min(baseT, capT);
+        const fill = mixHex(base, target, t);
+        pieces.push(`<path d="${bandAreaPath(band.from, band.to)}" fill="${fill}" fill-opacity="0.18"></path>`);
+        pieces.push(`<path d="${bandAreaPath(-band.to, -band.from)}" fill="${fill}" fill-opacity="0.18"></path>`);
+      }
+      noiseBands.innerHTML = pieces.join('');
+    }
+
+    function buildCurve() {
+      const points = [];
+      const scaleX = 520 / 8;
+      const offsetX = 40;
+      const scaleY = 180;
+      const offsetY = 210;
+
+      for (let i = 0; i <= 160; i++) {
+        const x = -4 + (8 * i / 160);
+        const y = normalPdf(x);
+        const plotX = offsetX + (x + 4) * scaleX;
+        const plotY = offsetY - y * scaleY * 2.5;
+        points.push([plotX, plotY]);
+      }
+
+      let d = `M ${points[0][0]} ${points[0][1]}`;
+      for (let i = 1; i < points.length; i++) {
+        d += ` L ${points[i][0]} ${points[i][1]}`;
+      }
+      curvePath.setAttribute('d', d);
+      setCriticalRegion();
+    }
+
+    function buildShade(z) {
+      const clampZ = Math.max(-4, Math.min(4, z));
+      const scaleX = 520 / 8;
+      const offsetX = 40;
+      const scaleY = 180;
+      const offsetY = 210;
+
+      const leftBound = -4;
+      const rightBound = 4;
+      const leftCut = -Math.abs(clampZ);
+      const rightCut = Math.abs(clampZ);
+
+      function shadePath(fromX, toX) {
+        const steps = 80;
+        const pts = [];
+        for (let i = 0; i <= steps; i++) {
+          const x = fromX + (toX - fromX) * (i / steps);
+          const y = normalPdf(x);
+          const plotX = offsetX + (x + 4) * scaleX;
+          const plotY = offsetY - y * scaleY * 2.5;
+          pts.push([plotX, plotY]);
+        }
+        let d = `M ${offsetX + (fromX + 4) * scaleX} ${offsetY}`;
+        for (const [px, py] of pts) {
+          d += ` L ${px} ${py}`;
+        }
+        d += ` L ${offsetX + (toX + 4) * scaleX} ${offsetY} Z`;
+        return d;
+      }
+
+      shadeLeft.setAttribute('d', shadePath(leftBound, leftCut));
+      shadeRight.setAttribute('d', shadePath(rightCut, rightBound));
+
+      const zx = offsetX + (clampZ + 4) * scaleX;
+      zLine.setAttribute('x1', zx);
+      zLine.setAttribute('x2', zx);
+      zLabel.setAttribute('x', zx);
+      zLabel.textContent = `z = ${clampZ.toFixed(2)}`;
+    }
+
+    function interpret(pValue, lift) {
+      if (!isFinite(pValue)) return 'Enter valid group sizes and conversions to see interpretation.';
+      const significance = pValue < 0.05 ? 'statistically significant' : 'not statistically significant';
+      const liftDir = lift >= 0 ? 'increase' : 'decrease';
+      return `The test shows a ${formatPercent(Math.abs(lift))} ${liftDir} versus control and is ${significance}. A p-score below 0.05 means the result is statistically significant at the 95% confidence level. The confidence value shown is (1 - p-score) as a percent, so higher values mean stronger evidence that the lift is real.`;
+    }
+
+    function validateInputs() {
+      const n1 = Number(controlSize.value);
+      const n2 = Number(testSize.value);
+      const c1 = Number(controlConv.value);
+      const c2 = Number(testConv.value);
+
+      if (n1 <= 0 || n2 <= 0) return 'Group sizes must be greater than zero.';
+      if (c1 < 0 || c2 < 0) return 'Conversions cannot be negative.';
+      if (c1 > n1 || c2 > n2) return 'Conversions cannot exceed group size.';
+      return '';
+    }
+
+    function calculate() {
+      const error = validateInputs();
+      validation.textContent = error;
+      if (error) return;
+
+      const n1 = Number(controlSize.value);
+      const n2 = Number(testSize.value);
+      const c1 = Number(controlConv.value);
+      const c2 = Number(testConv.value);
+
+      const p1 = c1 / n1;
+      const p2 = c2 / n2;
+      const delta = p2 - p1;
+      const liftDenom = p1 === 0 ? 1 : p1;
+      const lift = delta / liftDenom;
+      const pooled = (c1 + c2) / (n1 + n2);
+      const se = Math.sqrt(pooled * (1 - pooled) * (1 / n1 + 1 / n2));
+      const z = se === 0 ? 0 : delta / se;
+      const pValue = 2 * (1 - normalCdf(Math.abs(z)));
+      const confidence = 1 - pValue;
+
+      liftEl.textContent = formatPP(delta);
+      seEl.textContent = formatPP(se);
+      zEl.textContent = formatNumber(z);
+      pEl.textContent = formatNumber(pValue);
+      confidenceEl.textContent = formatPercent(confidence);
+
+      commentary.textContent = interpret(pValue, lift);
+      tailLegend.textContent = 'Two-tailed p-value area';
+
+      const p1Text = `${c1}/${n1} = ${formatRate(p1)}`;
+      const p2Text = `${c2}/${n2} = ${formatRate(p2)}`;
+      const liftNote = p1 === 0 ? ' Control rate is 0, so lift uses denominator 1 to avoid division by zero.' : '';
+      expLift.textContent = `Absolute lift (pp) = p2 - p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`;
+      expSe.textContent = `Pooled rate = (${c1} + ${c2}) / (${n1} + ${n2}) = ${formatRate(pooled)}. SE (noise) = sqrt(p_pool(1 - p_pool) * (1/${n1} + 1/${n2})) = ${formatPP(se)}.`;
+      expZ.textContent = `Z = (p2 - p1) / SE. Delta = p2 - p1 = ${formatPP(delta)}. Z = ${formatPP(delta)} / ${formatPP(se)} = ${formatNumber(z)}.`;
+      expP.textContent = `Two-tailed: p = 2 * (1 - Φ(|z|)). With |z| = ${formatNumber(Math.abs(z))}, p = ${formatNumber(pValue)}.`;
+      expConf.textContent = `Confidence = 1 - p = 1 - ${formatNumber(pValue)} = ${formatPercent(confidence)}.`;
+      commentary.classList.remove('pulse');
+      void commentary.offsetWidth;
+      commentary.classList.add('pulse');
+
+      buildNoiseBands(z);
+      buildShade(z);
+      zLine.setAttribute('stroke-dasharray', Math.abs(z) <= Z_CRIT_95 ? '7 7' : '');
+      drawBars({ n1, c1, p1, n2, c2, p2, delta, lift, se, confidence });
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calculate);
+    [controlSize, controlConv, testSize, testConv].forEach(el => {
+      el.addEventListener('input', () => {
+        validation.textContent = '';
+      });
+    });
+
+    buildCurve();
+    calculate();
+  </script>
+</body>
+</html>
