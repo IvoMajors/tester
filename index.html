@@ -707,6 +707,7 @@
     const modeNote = document.getElementById('modeNote');
     const modeInputs = Array.from(document.querySelectorAll('input[name="mode"]'));
     const bayesFields = Array.from(document.querySelectorAll('.bayes-only'));
+    const calcBtn = document.getElementById('calcBtn');
 
     const liftEl = document.getElementById('lift');
     const seEl = document.getElementById('se');
@@ -822,6 +823,9 @@
       bayesChartWrap.classList.toggle('active', isBayes);
       freqTitle.classList.toggle('hidden', isBayes);
       freqChartWrap.classList.toggle('hidden', isBayes);
+      if (calcBtn) {
+        calcBtn.textContent = isBayes ? 'Calculate win probability' : 'Calculate significance';
+      }
       modeNote.textContent = isBayes
         ? 'Calculates the probability that the Test cohort will outperform the Control in the long run.'
         : 'Determines if the lift we saw is statistically significant or just a result of random chance.';
