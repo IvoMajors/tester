@@ -184,37 +184,6 @@
       display: none;
     }
 
-    .priors {
-      margin-top: 10px;
-      padding-top: 6px;
-      border-top: 1px dashed #e2e8f0;
-      display: none;
-    }
-
-    .priors.bayes-only.active {
-      display: none;
-    }
-
-    .priors.bayes-only.active.show {
-      display: grid;
-    }
-
-    .priors-toggle {
-      margin-top: 10px;
-    }
-
-    .priors-toggle .toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      color: #0f172a;
-    }
-
-    .priors-toggle input {
-      width: 16px;
-      height: 16px;
-    }
 
     label {
       font-weight: 600;
@@ -484,7 +453,7 @@
         <div class="logo"></div>
         <div>
           <h1>Tester</h1>
-          <p class="tagline">A tool for checking whether your campaign lift study results are statistically meaningful.</p>
+          <p class="tagline">A tool for interpreting ad campaign lift studies.</p>
         </div>
       </div>
     </header>
@@ -492,7 +461,7 @@
     <div class="grid">
       <section class="panel">
         <h2>Campaign Inputs</h2>
-        <p class="note">Enter the sample sizes and number of successes for both groups.</p>
+        <p class="note">Start by gathering data from your two cohort campaign lift study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
           <div class="mode-toggle">
             <label>Analysis method</label>
@@ -513,16 +482,6 @@
                 <label for="controlConv">Number of Successes (x₁) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded.">?</span></label>
                 <input id="controlConv" type="number" min="0" value="120" />
               </div>
-              <div class="priors bayes-only" id="controlPriors">
-                <div class="input-row">
-                  <label for="controlPriorN">Prior Sample Size (n₁ prior)</label>
-                  <input id="controlPriorN" type="number" min="0" value="0" />
-                </div>
-                <div class="input-row">
-                  <label for="controlPriorX">Prior Successes (x₁ prior)</label>
-                  <input id="controlPriorX" type="number" min="0" value="0" />
-                </div>
-              </div>
             </div>
             <div class="group-box">
               <h3>Test Group</h3>
@@ -534,23 +493,7 @@
                 <label for="testConv">Number of Successes (x₂) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded.">?</span></label>
                 <input id="testConv" type="number" min="0" value="150" />
               </div>
-              <div class="priors bayes-only" id="testPriors">
-                <div class="input-row">
-                  <label for="testPriorN">Prior Sample Size (n₂ prior)</label>
-                  <input id="testPriorN" type="number" min="0" value="0" />
-                </div>
-                <div class="input-row">
-                  <label for="testPriorX">Prior Successes (x₂ prior)</label>
-                  <input id="testPriorX" type="number" min="0" value="0" />
-                </div>
-              </div>
             </div>
-          </div>
-          <div class="priors-toggle bayes-only">
-            <label class="toggle">
-              <input type="checkbox" id="togglePriors" />
-              <span>Add Priors</span>
-            </label>
           </div>
           <button class="btn" id="calcBtn">Calculate significance</button>
           <div class="note" id="validation"></div>
@@ -761,13 +704,6 @@
     const testSize = document.getElementById('testSize');
     const testConv = document.getElementById('testConv');
     const validation = document.getElementById('validation');
-    const controlPriorN = document.getElementById('controlPriorN');
-    const controlPriorX = document.getElementById('controlPriorX');
-    const testPriorN = document.getElementById('testPriorN');
-    const testPriorX = document.getElementById('testPriorX');
-    const togglePriors = document.getElementById('togglePriors');
-    const controlPriors = document.getElementById('controlPriors');
-    const testPriors = document.getElementById('testPriors');
     const modeNote = document.getElementById('modeNote');
     const modeInputs = Array.from(document.querySelectorAll('input[name="mode"]'));
     const bayesFields = Array.from(document.querySelectorAll('.bayes-only'));
@@ -886,12 +822,9 @@
       bayesChartWrap.classList.toggle('active', isBayes);
       freqTitle.classList.toggle('hidden', isBayes);
       freqChartWrap.classList.toggle('hidden', isBayes);
-      const showPriors = isBayes && togglePriors && togglePriors.checked;
-      if (controlPriors) controlPriors.classList.toggle('show', showPriors);
-      if (testPriors) testPriors.classList.toggle('show', showPriors);
       modeNote.textContent = isBayes
-        ? 'Bayesian: combines observed data with priors to estimate the probability the test beats the control.'
-        : 'Frequentist: tests for statistical significance using a two‑proportion z‑test.';
+        ? 'Calculates the probability that the Test cohort will outperform the Control in the long run.'
+        : 'Determines if the lift we saw is statistically significant or just a result of random chance.';
     }
 
     function clamp(val, min, max) {
@@ -1383,13 +1316,6 @@
     }
 
     function validatePriors() {
-      const pn1 = Number(controlPriorN.value);
-      const pn2 = Number(testPriorN.value);
-      const px1 = Number(controlPriorX.value);
-      const px2 = Number(testPriorX.value);
-      if (pn1 < 0 || pn2 < 0) return 'Prior sample sizes cannot be negative.';
-      if (px1 < 0 || px2 < 0) return 'Prior successes cannot be negative.';
-      if (px1 > pn1 || px2 > pn2) return 'Prior successes cannot exceed prior sample size.';
       return '';
     }
 
@@ -1458,14 +1384,16 @@
           validation.textContent = priorErr;
           return;
         }
-        const pn1 = Number(controlPriorN.value);
-        const pn2 = Number(testPriorN.value);
-        const px1 = Number(controlPriorX.value);
-        const px2 = Number(testPriorX.value);
-        const a1 = px1 + 1;
-        const b1 = (pn1 - px1) + 1;
-        const a2 = px2 + 1;
-        const b2 = (pn2 - px2) + 1;
+        const pooledRate = (c1 + c2) / (n1 + n2);
+        const EB_PRIOR_STRENGTH = 20;
+        const priorN = EB_PRIOR_STRENGTH;
+        const priorRate = pooledRate;
+        const a = priorRate * priorN + 1;
+        const b = (1 - priorRate) * priorN + 1;
+        const a1 = a;
+        const b1 = b;
+        const a2 = a;
+        const b2 = b;
         const postA1 = a1 + c1;
         const postB1 = b1 + (n1 - c1);
         const postA2 = a2 + c2;
@@ -1548,12 +1476,7 @@
         calculate();
       });
     });
-    if (togglePriors) {
-      togglePriors.addEventListener('change', () => {
-        setModeUI(getMode());
-      });
-    }
-    [controlSize, controlConv, testSize, testConv, controlPriorN, controlPriorX, testPriorN, testPriorX].forEach(el => {
+    [controlSize, controlConv, testSize, testConv].forEach(el => {
       el.addEventListener('input', () => {
         validation.textContent = '';
       });
