@@ -99,48 +99,6 @@
       gap: 14px;
     }
 
-    .mode-toggle {
-      display: grid;
-      gap: 8px;
-      padding: 12px;
-      border: 1px solid #e7ecf3;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
-    }
-
-    .mode-toggle label {
-      font-size: 13px;
-      color: #475569;
-      font-weight: 600;
-    }
-
-    .mode-options {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .mode-options label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .mode-options input {
-      accent-color: #118ab2;
-    }
-
-    .mode-note {
-      font-size: 12px;
-      color: #64748b;
-      line-height: 1.4;
-    }
 
     .group-grid {
       display: grid;
@@ -173,15 +131,15 @@
     }
 
     .bayes-only {
-      display: none;
+      display: block;
     }
 
     .bayes-only.active {
-      display: grid;
+      display: block;
     }
 
     .freq-only.hidden {
-      display: none;
+      display: block;
     }
 
 
@@ -463,14 +421,6 @@
         <h2>Campaign Inputs</h2>
         <p class="note">Start by gathering data from your two cohort campaign lift study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
-          <div class="mode-toggle">
-            <label>Analysis method</label>
-            <div class="mode-options">
-              <label><input type="radio" name="mode" value="frequentist" checked /> Frequentist</label>
-              <label><input type="radio" name="mode" value="bayesian" /> Bayesian</label>
-            </div>
-            <div class="mode-note" id="modeNote">Frequentist: tests for statistical significance using a two‑proportion z‑test.</div>
-          </div>
           <div class="group-grid">
             <div class="group-box">
               <h3>Control Group</h3>
@@ -632,10 +582,10 @@
               <text id="zDotLabel" x="300" y="108" text-anchor="middle" font-size="11" fill="#118ab2" font-weight="800">Z =</text>
               <text id="zDotText" x="300" y="126" text-anchor="middle" font-size="14" fill="#118ab2" font-weight="900">0.00</text>
               <g id="confBadge">
-                <rect id="confBadgeRect" x="410" y="10" width="170" height="32" rx="14" fill="rgba(255,255,255,0.92)" stroke="#ef476f" stroke-width="2" />
-                <text id="confBadgeText" x="495" y="31" text-anchor="middle" font-size="12" fill="#ef476f" font-weight="800">—</text>
+                <rect id="confBadgeRect" x="410" y="4" width="170" height="32" rx="14" fill="rgba(255,255,255,0.92)" stroke="#ef476f" stroke-width="2" />
+                <text id="confBadgeText" x="495" y="25" text-anchor="middle" font-size="12" fill="#ef476f" font-weight="800">—</text>
               </g>
-              <g id="ticks" fill="none" stroke="#c5ced9" stroke-width="2" opacity="0.95">
+              <g id="ticks" fill="none" stroke="#dbe2ea" stroke-width="2" opacity="0.95">
                 <line x1="40" x2="560" y1="210" y2="210" />
                 <line x1="40" x2="40" y1="210" y2="218" />
                 <line x1="105" x2="105" y1="210" y2="216" />
@@ -647,7 +597,7 @@
                 <line x1="495" x2="495" y1="210" y2="216" />
                 <line x1="560" x2="560" y1="210" y2="218" />
               </g>
-              <g id="tickLabels" font-size="11" fill="#5b6777">
+              <g id="tickLabels" font-size="12" fill="#5b6777">
                 <text x="40" y="232">-4</text>
                 <text x="105" y="232" text-anchor="middle">-3</text>
                 <text x="170" y="232" text-anchor="middle">-2</text>
@@ -660,9 +610,9 @@
                 <text x="570" y="232" text-anchor="start" font-size="12" fill="#94a3b8">σ</text>
               </g>
               <g id="noEffectLabel">
-                <text x="300" y="256" text-anchor="middle" font-size="12" fill="#475569" font-weight="800">No Clear Effect</text>
-                <text id="negLabel" x="160" y="256" text-anchor="middle" font-size="12" fill="#475569" font-weight="800">Negative Effect</text>
-                <text id="posLabel" x="440" y="256" text-anchor="middle" font-size="12" fill="#475569" font-weight="800">Positive Effect</text>
+                <text x="300" y="256" text-anchor="middle" font-size="12" fill="#5b6777" font-weight="800">No Clear Effect</text>
+                <text id="negLabel" x="160" y="256" text-anchor="middle" font-size="12" fill="#5b6777" font-weight="800">Negative Effect</text>
+                <text id="posLabel" x="440" y="256" text-anchor="middle" font-size="12" fill="#5b6777" font-weight="800">Positive Effect</text>
               </g>
               <g id="hitLayer">
                 <path id="hitSig95" class="tip-target" fill="transparent" data-tip="Z values closer to 0 look like random noise (no clear measured effect). Outside the pink zone (|Z| > 1.96) is statistically significant at 95%. Results between 90–95% confidence can be directionally significant but still inconclusive."></path>
@@ -675,7 +625,7 @@
             </svg>
           </div>
           <div class="chart-title bayes-only" id="bayesTitle">
-            <h3>Summary</h3>
+            <h3>Bayesian Probability Distribution</h3>
           </div>
           <div class="chart bayes-only" id="bayesChartWrap">
             <svg id="bayesChart" viewBox="0 0 600 260" width="100%" height="100%" role="img" aria-label="Bayesian posterior distributions">
@@ -686,7 +636,11 @@
               <path id="bayesControl" fill="none" stroke="#4f9cff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
               <path id="bayesTest" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
               <g id="bayesLegend"></g>
+              <g id="bayesCallout"></g>
             </svg>
+          </div>
+          <div class="chart-title">
+            <h3>Summary</h3>
           </div>
           <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
         </div>
@@ -704,8 +658,6 @@
     const testSize = document.getElementById('testSize');
     const testConv = document.getElementById('testConv');
     const validation = document.getElementById('validation');
-    const modeNote = document.getElementById('modeNote');
-    const modeInputs = Array.from(document.querySelectorAll('input[name="mode"]'));
     const bayesFields = Array.from(document.querySelectorAll('.bayes-only'));
     const calcBtn = document.getElementById('calcBtn');
 
@@ -750,6 +702,7 @@
     const bayesControlFill = document.getElementById('bayesControlFill');
     const bayesTestFill = document.getElementById('bayesTestFill');
     const bayesLegend = document.getElementById('bayesLegend');
+    const bayesCallout = document.getElementById('bayesCallout');
     const freqTitle = document.getElementById('freqTitle');
     const freqChartWrap = document.getElementById('freqChartWrap');
     const hitSig95 = document.getElementById('hitSig95');
@@ -811,24 +764,11 @@
       return `${(val * 100).toFixed(2)}%`;
     }
 
-    function getMode() {
-      const selected = modeInputs.find(input => input.checked);
-      return selected ? selected.value : 'frequentist';
-    }
-
-    function setModeUI(mode) {
-      const isBayes = mode === 'bayesian';
-      bayesFields.forEach(el => el.classList.toggle('active', isBayes));
-      bayesTitle.classList.toggle('active', isBayes);
-      bayesChartWrap.classList.toggle('active', isBayes);
-      freqTitle.classList.toggle('hidden', isBayes);
-      freqChartWrap.classList.toggle('hidden', isBayes);
+    function setModeUI() {
+      bayesFields.forEach(el => el.classList.add('active'));
       if (calcBtn) {
-        calcBtn.textContent = isBayes ? 'Calculate win probability' : 'Calculate significance';
+        calcBtn.textContent = 'Calculate results';
       }
-      modeNote.textContent = isBayes
-        ? 'Calculates the probability that the Test cohort will outperform the Control in the long run.'
-        : 'Determines if the lift we saw is statistically significant or just a result of random chance.';
     }
 
     function clamp(val, min, max) {
@@ -910,16 +850,21 @@
     function drawBayesPosterior(a1, b1, a2, b2, p1, p2) {
       const W = 600;
       const H = 260;
-      const padL = 40;
-      const padR = 30;
-      const padT = 26;
-      const padB = 40;
+      const padL = 56;
+      const padR = 26;
+      const padT = 22;
+      const padB = 42;
       const baseY = H - padB;
       const steps = 220;
+      const mid = (p1 + p2) / 2;
+      const span = 0.18 + Math.min(0.14, Math.abs(p2 - p1) * 2);
+      const xMin = clamp(mid - span, 0, 1);
+      const xMax = clamp(mid + span, 0, 1);
+      const xRange = Math.max(1e-6, xMax - xMin);
       const xs = [];
       let maxY = 0;
       for (let i = 1; i < steps; i++) {
-        const x = i / steps;
+        const x = xMin + (xRange * i) / steps;
         const y1 = betaPdf(x, a1, b1);
         const y2 = betaPdf(x, a2, b2);
         maxY = Math.max(maxY, y1, y2);
@@ -930,7 +875,8 @@
       let d1 = '';
       let d2 = '';
       xs.forEach((pt, i) => {
-        const px = padL + pt.x * scaleX;
+        const nx = (pt.x - xMin) / xRange;
+        const px = padL + nx * scaleX;
         const py1 = baseY - pt.y1 * scaleY;
         const py2 = baseY - pt.y2 * scaleY;
         d1 += `${i === 0 ? 'M' : 'L'} ${px} ${py1} `;
@@ -944,25 +890,54 @@
       const fill2 = `${d2} L ${lastX} ${baseY} L ${firstX} ${baseY} Z`;
       bayesControlFill.setAttribute('d', fill1.trim());
       bayesTestFill.setAttribute('d', fill2.trim());
-      bayesGrid.innerHTML = [
-        `<line x1="${padL}" x2="${W - padR}" y1="${baseY}" y2="${baseY}" stroke="#e2e8f0" stroke-width="2"></line>`,
-        `<line x1="${padL}" x2="${padL}" y1="${padT}" y2="${baseY}" stroke="#e2e8f0" stroke-width="2"></line>`,
-        `<text x="${padL}" y="${baseY + 20}" font-size="11" fill="#94a3b8">0%</text>`,
-        `<text x="${padL + scaleX * 0.25}" y="${baseY + 20}" font-size="11" fill="#94a3b8" text-anchor="middle">25%</text>`,
-        `<text x="${padL + scaleX * 0.5}" y="${baseY + 20}" font-size="11" fill="#94a3b8" text-anchor="middle">50%</text>`,
-        `<text x="${padL + scaleX * 0.75}" y="${baseY + 20}" font-size="11" fill="#94a3b8" text-anchor="middle">75%</text>`,
-        `<text x="${W - padR}" y="${baseY + 20}" font-size="11" fill="#94a3b8" text-anchor="end">100%</text>`,
-        `<text x="${padL}" y="${padT - 8}" font-size="11" fill="#94a3b8">Probability Density</text>`,
-        `<text x="${(W - padR + padL) / 2}" y="${H - 6}" font-size="11" fill="#94a3b8" text-anchor="middle">Conversion Rate</text>`,
-      ].join('');
-      const controlLabel = `Control (${formatPercentValue(p1)})`;
-      const testLabel = `Test (${formatPercentValue(p2)})`;
+
+      const grid = [];
+      const axisStroke = '#dbe2ea';
+      const gridStroke = '#e8eef7';
+      const axisText = '#5b6777';
+
+      // axes
+      grid.push(`<line x1="${padL}" x2="${W - padR}" y1="${baseY}" y2="${baseY}" stroke="${axisStroke}" stroke-width="2"></line>`);
+      grid.push(`<line x1="${padL}" x2="${padL}" y1="${padT}" y2="${baseY}" stroke="${axisStroke}" stroke-width="2"></line>`);
+
+      // horizontal gridlines
+      for (const frac of [1 / 3, 2 / 3]) {
+        const yy = padT + (baseY - padT) * frac;
+        grid.push(`<line x1="${padL}" x2="${W - padR}" y1="${yy}" y2="${yy}" stroke="${gridStroke}" stroke-width="2"></line>`);
+      }
+
+      // x ticks
+      const tickStep = xRange <= 0.32 ? 0.05 : 0.1;
+      const start = Math.ceil(xMin / tickStep) * tickStep;
+      const end = Math.floor(xMax / tickStep) * tickStep;
+      for (let t = start; t <= end + 1e-12; t += tickStep) {
+        const nx = (t - xMin) / xRange;
+        const px = padL + nx * scaleX;
+        grid.push(`<line x1="${px}" x2="${px}" y1="${baseY}" y2="${baseY + 7}" stroke="${axisStroke}" stroke-width="2"></line>`);
+        grid.push(`<text x="${px}" y="${baseY + 22}" font-size="12" fill="${axisText}" text-anchor="middle">${(t * 100).toFixed(0)}%</text>`);
+        grid.push(`<line x1="${px}" x2="${px}" y1="${padT}" y2="${baseY}" stroke="${gridStroke}" stroke-width="2" opacity="0.65"></line>`);
+      }
+
+      // axis labels
+      const yLabelX = padL - 34;
+      const yLabelY = (padT + baseY) / 2;
+      grid.push(`<text x="${yLabelX}" y="${yLabelY}" font-size="12" fill="${axisText}" text-anchor="middle" transform="rotate(-90 ${yLabelX} ${yLabelY})">Probability Density</text>`);
+      grid.push(`<text x="${(W - padR + padL) / 2}" y="${H - 6}" font-size="12" fill="${axisText}" text-anchor="middle">Conversion Rate</text>`);
+
+      bayesGrid.innerHTML = grid.join('');
+
+      const controlLabel = `Control`;
+      const testLabel = `Test`;
+      const legendW = 160;
+      const legendH = 56;
+      const legendX = W - padR - legendW;
+      const legendY = padT + 34;
       bayesLegend.innerHTML = `
-        <rect x="${W - 190}" y="${padT - 2}" width="160" height="44" rx="8" fill="rgba(255,255,255,0.9)" stroke="#e2e8f0"/>
-        <line x1="${W - 176}" y1="${padT + 10}" x2="${W - 152}" y2="${padT + 10}" stroke="#4f9cff" stroke-width="3" stroke-linecap="round"/>
-        <text x="${W - 146}" y="${padT + 14}" font-size="11" fill="#475569">${escapeText(controlLabel)}</text>
-        <line x1="${W - 176}" y1="${padT + 28}" x2="${W - 152}" y2="${padT + 28}" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
-        <text x="${W - 146}" y="${padT + 32}" font-size="11" fill="#475569">${escapeText(testLabel)}</text>
+        <rect x="${legendX}" y="${legendY}" width="${legendW}" height="${legendH}" rx="12" fill="rgba(255,255,255,0.94)" stroke="#dbe2ea"/>
+        <line x1="${legendX + 14}" y1="${legendY + 20}" x2="${legendX + 44}" y2="${legendY + 20}" stroke="#4f9cff" stroke-width="4" stroke-linecap="round"/>
+        <text x="${legendX + 54}" y="${legendY + 24}" font-size="13" font-weight="700" fill="#334155">${escapeText(controlLabel)}</text>
+        <line x1="${legendX + 14}" y1="${legendY + 40}" x2="${legendX + 44}" y2="${legendY + 40}" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+        <text x="${legendX + 54}" y="${legendY + 44}" font-size="13" font-weight="700" fill="#334155">${escapeText(testLabel)}</text>
       `;
     }
 
@@ -1251,12 +1226,10 @@
           ? 'Gather more data before scaling.'
           : 'Reevaluate creative, offer, and targeting before retesting.');
       const bayesLine = bayesInfo
-        ? `<li><strong>Probability of Being Better:</strong> ${bayesInfo.prob}</li>
-        <li><strong>Credible Interval:</strong> ${bayesInfo.ci}</li>`
+        ? `<li><strong>Bayesian:</strong> Probability of Being Better — ${bayesInfo.prob}</li>
+        <li><strong>Bayesian:</strong> Credible Interval — ${bayesInfo.ci}</li>`
         : '';
-      const freqLine = mode === 'bayesian'
-        ? ''
-        : `<li><strong>Significance (1 − p):</strong> <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is directionally significant but still inconclusive.' : 'This does not clear the 95% threshold.')}</li>`;
+      const freqLine = `<li><strong>Frequentist:</strong> Significance (1 − p) — <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is directionally significant but still inconclusive.' : 'This does not clear the 95% threshold.')}</li>`;
       const winnerLine = delta === 0
         ? 'The Test Group did not outperform the Control Group.'
         : (delta > 0 ? 'The Test Group outperformed the Control Group.' : 'The Control Group outperformed the Test Group.');
@@ -1266,24 +1239,7 @@
         ? `You saw no difference in conversion (<strong>${pp}</strong> absolute).`
         : `You saw a <strong>${relText}</strong> relative ${delta >= 0 ? 'increase' : 'decrease'} in conversion (<strong>${formatPPValue(Math.abs(delta))}</strong> percentage points absolute).`;
       let verdictText = '';
-      if (mode === 'bayesian') {
-        // Bayesian: use posterior probability/risk language in the bayesLine items below.
-        if (delta === 0) {
-          verdictText = 'This result does not support moving forward with the Test version so far.';
-        } else if (significant) {
-          verdictText = delta > 0
-            ? 'This result supports moving forward with the Test version.'
-            : 'This result supports sticking with the Control version.';
-        } else if (directional) {
-          verdictText = delta > 0
-            ? 'This result is directionally positive but not strong enough to recommend switching yet.'
-            : 'This result is directionally negative but not strong enough to recommend switching yet.';
-        } else {
-          verdictText = delta > 0
-            ? 'This result is not strong enough to recommend the Test version yet.'
-            : 'This result does not support moving away from the Control version.';
-        }
-      } else if (significant) {
+      if (significant) {
         verdictText = delta > 0
           ? 'This result supports moving forward with the Test version.'
           : 'This result supports sticking with the Control version.';
@@ -1343,13 +1299,23 @@
       const z = se === 0 ? 0 : delta / se;
       const pValue = 2 * (1 - normalCdf(Math.abs(z)));
       const confidence = 1 - pValue;
-      const mode = getMode();
+      const mode = 'both';
 
       liftEl.textContent = formatPPValue(delta);
       seEl.textContent = formatPPValue(se);
       zEl.textContent = `${(isFinite(z) ? z : 0).toFixed(2)}x`;
       pEl.textContent = formatPercentValue(pValue);
+      confidenceLabel.textContent = 'Significance';
+      confidenceUnit.textContent = '1 - p-value';
       confidenceEl.textContent = formatPercentValue(confidence);
+      tileConfidence.setAttribute(
+        'data-tip',
+        `Significance (1 - p): ${formatPercent(confidence)} (p = ${pValue.toFixed(4)}). This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.`
+      );
+      const sigColor = confidence >= 0.9 ? '#16a34a' : '#ef4444';
+      confBadgeText.textContent = `${formatPercentValue(confidence)} significance`;
+      confBadgeText.setAttribute('fill', sigColor);
+      confBadgeRect.setAttribute('stroke', sigColor);
 
       const isSignificant = confidence >= 0.95;
       const isDirectional = !isSignificant && confidence >= 0.90;
@@ -1363,6 +1329,9 @@
         : (isDirectional ? 'Between 90–95% (directional, inconclusive)' : 'Below 90% (p ≥ 0.10)');
 
       let bayesInfo = null;
+      let bayesProb = NaN;
+      let bayesRateLo = NaN;
+      let bayesRateHi = NaN;
       let barConfValue = confidence;
       let barConfLabel = 'significance';
       // Legend text is static in markup (and includes tooltip).
@@ -1382,7 +1351,7 @@
       void commentary.offsetWidth;
       commentary.classList.add('pulse');
 
-      if (mode === 'bayesian') {
+      if (true) {
         const priorErr = validatePriors();
         if (priorErr) {
           validation.textContent = priorErr;
@@ -1425,32 +1394,29 @@
         rateSamples.sort((a, b) => a - b);
         const rateLo = rateSamples[Math.floor(samples * 0.025)];
         const rateHi = rateSamples[Math.floor(samples * 0.975)];
+        bayesProb = prob;
+        bayesRateLo = rateLo;
+        bayesRateHi = rateHi;
         bayesInfo = {
           prob: `There is a ${(prob * 100).toFixed(1)}% probability that the Test version is actually superior to the Control.`,
           ci: `We are 95% certain the Test group’s true conversion rate is between ${formatPercentValue(rateLo)} and ${formatPercentValue(rateHi)}.`
         };
         tileZ.setAttribute('data-tip', `Bayesian: P(test > control) = ${(prob * 100).toFixed(1)}%. 95% credible Test rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
-        confidenceLabel.textContent = 'Test Win Probability';
-        confidenceUnit.textContent = 'P(test > control)';
-        confidenceEl.textContent = `${(prob * 100).toFixed(2)}%`;
-        tileConfidence.setAttribute('data-tip', `Test win probability (posterior probability): ${(prob * 100).toFixed(1)}%. 95% credible Test rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
-        const confColor = prob >= 0.9 ? '#16a34a' : '#ef4444';
-        confBadgeText.textContent = `${(prob * 100).toFixed(2)}% test win probability`;
-        confBadgeText.setAttribute('fill', confColor);
-        confBadgeRect.setAttribute('stroke', confColor);
         barConfValue = prob;
-        barConfLabel = 'test win probability';
-      } else {
-        confidenceLabel.textContent = 'Significance';
-        confidenceUnit.textContent = '1 - p-value';
-        tileConfidence.setAttribute('data-tip', `Significance (1 - p): ${formatPercent(confidence)} (p = ${pValue.toFixed(4)}). This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.`);
-        const confColor = confidence >= 0.9 ? '#16a34a' : '#ef4444';
-        confBadgeText.textContent = `${formatPercentValue(confidence)} significance`;
-        confBadgeText.setAttribute('fill', confColor);
-        confBadgeRect.setAttribute('stroke', confColor);
-        barConfValue = confidence;
-        barConfLabel = 'significance';
+        barConfLabel = 'chance of improvement';
+        if (bayesCallout) {
+          const calloutText = `${(prob * 100).toFixed(2)}% chance of improvement`;
+          const w = 240;
+          const h = 32;
+          const x = 600 - 26 - w;
+          const y = 34;
+          bayesCallout.innerHTML = `
+            <rect x="${x}" y="${y - 24}" width="${w}" height="${h}" rx="14" fill="rgba(255,255,255,0.92)" stroke="#16a34a" stroke-width="2"/>
+            <text x="${x + w / 2}" y="${y - 3}" text-anchor="middle" font-size="12" font-weight="800" fill="#166534">${escapeText(calloutText)}</text>
+          `;
+        }
       }
+      // Bayesian chance of improvement is shown in the bar chart + summary.
 
       commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, mode });
 
@@ -1473,13 +1439,6 @@
     }
 
     document.getElementById('calcBtn').addEventListener('click', calculate);
-    modeInputs.forEach(input => {
-      input.addEventListener('change', () => {
-        validation.textContent = '';
-        setModeUI(getMode());
-        calculate();
-      });
-    });
     [controlSize, controlConv, testSize, testConv].forEach(el => {
       el.addEventListener('input', () => {
         validation.textContent = '';
@@ -1487,7 +1446,7 @@
     });
 
     buildCurve();
-    setModeUI(getMode());
+    setModeUI();
     calculate();
   </script>
 </body>
