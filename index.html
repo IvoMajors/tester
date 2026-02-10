@@ -419,7 +419,7 @@
     <div class="grid">
       <section class="panel">
         <h2>Campaign Inputs</h2>
-        <p class="note">Start by gathering data from your two cohort campaign lift study. Enter the sample sizes and number of successes for both groups.</p>
+        <p class="note">Start by entering data from your Randomized Controlled Trial study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
           <div class="group-grid">
             <div class="group-box">
@@ -615,10 +615,10 @@
                 <text id="posLabel" x="440" y="256" text-anchor="middle" font-size="12" fill="#5b6777" font-weight="800">Positive Effect</text>
               </g>
               <g id="hitLayer">
-                <path id="hitSig95" class="tip-target" fill="transparent" data-tip="Z values closer to 0 look like random noise (no clear measured effect). Outside the pink zone (|Z| > 1.96) is statistically significant at 95%. Results between 90–95% confidence can be directionally significant but still inconclusive."></path>
+                <path id="hitSig95" class="tip-target" fill="transparent" data-tip="Z values closer to 0 look like random noise (no clear measured effect). Outside the pink zone (|Z| > 1.96) is statistically significant at 95%. Results between 80–95% significance can be indicative (often used for tactical decisions) but still inconclusive."></path>
                 <path id="hitPLeft" class="tip-target" fill="transparent" data-tip="Statistically significant zone: outcomes in the tails (outside ±1.96) are rare by chance alone at the 95% level (two-tailed). Farther from 0 (larger |Z|) means a smaller p-value (lower chance the result is just noise)."></path>
                 <path id="hitPRight" class="tip-target" fill="transparent" data-tip="Statistically significant zone: outcomes in the tails (outside ±1.96) are rare by chance alone at the 95% level (two-tailed). Farther from 0 (larger |Z|) means a smaller p-value (lower chance the result is just noise)."></path>
-                <line id="hitZLine" class="tip-target" x1="300" x2="300" y1="30" y2="210" stroke="transparent" stroke-width="18" data-tip="Observed Z-score: how many 'noise units' away from no clear effect. |Z| > 1.96 is significant at 95%; 90–95% is directional but inconclusive."></line>
+                <line id="hitZLine" class="tip-target" x1="300" x2="300" y1="30" y2="210" stroke="transparent" stroke-width="18" data-tip="Observed Z-score: how many 'noise units' away from no clear effect. |Z| > 1.96 is significant at 95%; 80–95% can be indicative but still inconclusive."></line>
                 <line id="hitCritLeft" class="tip-target" x1="0" x2="0" y1="70" y2="210" stroke="transparent" stroke-width="14" data-tip="95% cutoff (z = -1.96). Crossing this line means the result is significant at 95% (two-tailed)."></line>
                 <line id="hitCritRight" class="tip-target" x1="0" x2="0" y1="70" y2="210" stroke="transparent" stroke-width="14" data-tip="95% cutoff (z = +1.96). Crossing this line means the result is significant at 95% (two-tailed)."></line>
               </g>
@@ -1209,7 +1209,7 @@
       const conf = formatPercent(confidence);
       const confidenceLevel = confidence;
       const significant = confidenceLevel >= 0.95;
-      const directional = !significant && confidenceLevel >= 0.90;
+      const directional = !significant && confidenceLevel >= 0.80;
       const absDeltaPP = Math.abs(delta) * 100;
       let magnitude = '';
       if (absDeltaPP >= 1 && absDeltaPP < 2) magnitude = 'encouraging';
@@ -1226,10 +1226,10 @@
           ? 'Gather more data before scaling.'
           : 'Reevaluate creative, offer, and targeting before retesting.');
       const bayesLine = bayesInfo
-        ? `<li><strong>Bayesian:</strong> Probability of Being Better — ${bayesInfo.prob}</li>
-        <li><strong>Bayesian:</strong> Credible Interval — ${bayesInfo.ci}</li>`
+        ? `<li><strong>Chance of improvement:</strong> There is a <strong>${bayesInfo.probPct}</strong> probability that the Test version is actually superior to the Control in the long run.</li>
+        <li><strong>Credible Interval:</strong> There is <strong>95%</strong> probability the Test group’s true conversion rate is between <strong>${bayesInfo.rateLo}</strong> and <strong>${bayesInfo.rateHi}</strong>.</li>`
         : '';
-      const freqLine = `<li><strong>Frequentist:</strong> Significance (1 − p) — <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is directionally significant but still inconclusive.' : 'This does not clear the 95% threshold.')}</li>`;
+      const freqLine = `<li><strong>Significance:</strong> <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is indicative but still inconclusive (often used for tactical decisions).' : 'This does not clear the 80% benchmark.')}</li>`;
       const winnerLine = delta === 0
         ? 'The Test Group did not outperform the Control Group.'
         : (delta > 0 ? 'The Test Group outperformed the Control Group.' : 'The Control Group outperformed the Test Group.');
@@ -1245,8 +1245,8 @@
           : 'This result supports sticking with the Control version.';
       } else if (directional) {
         verdictText = delta > 0
-          ? 'This result is directionally positive but not strong enough to recommend switching yet.'
-          : 'This result is directionally negative but not strong enough to recommend switching yet.';
+          ? 'This result is indicative and directionally positive, but not strong enough to recommend switching yet.'
+          : 'This result is indicative and directionally negative, but not strong enough to recommend switching yet.';
       } else {
         verdictText = delta > 0
           ? 'This result is not strong enough to recommend the Test version yet.'
@@ -1312,21 +1312,21 @@
         'data-tip',
         `Significance (1 - p): ${formatPercent(confidence)} (p = ${pValue.toFixed(4)}). This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.`
       );
-      const sigColor = confidence >= 0.9 ? '#16a34a' : '#ef4444';
+      const sigColor = confidence >= 0.8 ? '#16a34a' : '#ef4444';
       confBadgeText.textContent = `${formatPercentValue(confidence)} significance`;
       confBadgeText.setAttribute('fill', sigColor);
       confBadgeRect.setAttribute('stroke', sigColor);
 
       const isSignificant = confidence >= 0.95;
-      const isDirectional = !isSignificant && confidence >= 0.90;
+      const isDirectional = !isSignificant && confidence >= 0.80;
       verdictEl.textContent = isSignificant
         ? 'Significant'
-        : (isDirectional ? 'Directional' : 'Not significant');
+        : (isDirectional ? 'Indicative' : 'Not significant');
       verdictCard.classList.toggle('verdict-good', isSignificant);
       verdictCard.classList.toggle('verdict-bad', !isSignificant);
       verdictUnit.textContent = isSignificant
         ? 'At or above 95% (p < 0.05)'
-        : (isDirectional ? 'Between 90–95% (directional, inconclusive)' : 'Below 90% (p ≥ 0.10)');
+        : (isDirectional ? 'Between 80–95% (indicative, inconclusive)' : 'Below 80% (p ≥ 0.20)');
 
       let bayesInfo = null;
       let bayesProb = NaN;
@@ -1343,10 +1343,10 @@
       tileSe.setAttribute('data-tip', `Pooled rate = (${c1} + ${c2}) / (${n1} + ${n2}) = ${formatRate(pooled)}. SE (noise) = sqrt(p_pool(1 - p_pool) * (1/${n1} + 1/${n2})) = ${formatPP(se)}.`);
       tileZ.setAttribute('data-tip', `Z = (p2 - p1) / SE. Delta = p2 - p1 = ${formatPP(delta)}. Z = ${formatPP(delta)} / ${formatPP(se)} = ${formatNumber(z)}.`);
       tileP.setAttribute('data-tip', `Two-tailed: p = 2 * (1 - Φ(|z|)). With |z| = ${formatNumber(Math.abs(z))}, p = ${formatNumber(pValue)}.`);
-      tileConfidence.setAttribute('data-tip', `Confidence = 1 - p = 1 - ${formatNumber(pValue)} = ${formatPercent(confidence)}.`);
+      tileConfidence.setAttribute('data-tip', `Significance (1 - p): ${formatPercent(confidence)} (p = ${pValue.toFixed(4)}). This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.`);
       verdictCard.setAttribute('data-tip', isSignificant
         ? 'Significant: the p-value is below 0.05 (95% threshold).'
-        : 'Not significant: the p-value is at or above 0.05 (below the 95% threshold).');
+        : (isDirectional ? 'Indicative: significance is between 80–95% (often used for tactical decisions) but still inconclusive.' : 'Not significant: significance is below 80% (p ≥ 0.20).'));
       commentary.classList.remove('pulse');
       void commentary.offsetWidth;
       commentary.classList.add('pulse');
@@ -1398,8 +1398,9 @@
         bayesRateLo = rateLo;
         bayesRateHi = rateHi;
         bayesInfo = {
-          prob: `There is a ${(prob * 100).toFixed(1)}% probability that the Test version is actually superior to the Control.`,
-          ci: `We are 95% certain the Test group’s true conversion rate is between ${formatPercentValue(rateLo)} and ${formatPercentValue(rateHi)}.`
+          probPct: `${(prob * 100).toFixed(1)}%`,
+          rateLo: `${formatPercentValue(rateLo)}`,
+          rateHi: `${formatPercentValue(rateHi)}`
         };
         tileZ.setAttribute('data-tip', `Bayesian: P(test > control) = ${(prob * 100).toFixed(1)}%. 95% credible Test rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
         barConfValue = prob;
