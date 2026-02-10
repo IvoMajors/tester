@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Tester favicon">
+  <defs>
+    <linearGradient id="g" x1="10" y1="6" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd166"/>
+      <stop offset="0.35" stop-color="#ef476f"/>
+      <stop offset="0.62" stop-color="#118ab2"/>
+      <stop offset="0.85" stop-color="#06d6a0"/>
+      <stop offset="1" stop-color="#ffd166"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="6" y="6" width="52" height="52" rx="14" fill="url(#g)"/>
+  <rect x="6" y="6" width="52" height="52" rx="14" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="3"/>
+</svg>
