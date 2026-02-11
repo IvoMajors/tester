@@ -395,6 +395,17 @@
       color: var(--muted);
     }
 
+    a.ext-link {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    a.ext-link:hover {
+      text-decoration-thickness: 2px;
+    }
+
     .pulse {
       animation: fadeUp 0.6s ease;
     }
@@ -420,7 +431,7 @@
     <div class="grid">
       <section class="panel">
         <h2>Campaign Inputs</h2>
-        <p class="note">Start by entering data from your Randomized Controlled Trial study. Enter the sample sizes and number of successes for both groups.</p>
+        <p class="note">Start by entering data from your <a class="ext-link" href="https://en.wikipedia.org/wiki/Randomized_controlled_trial" target="_blank" rel="noopener noreferrer">Randomized Controlled Trial</a> study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
           <div class="group-grid">
             <div class="group-box">
@@ -648,7 +659,7 @@
       </section>
     </div>
 
-    <div class="footer">An informal tool vibe coded by Ivo Majors. Not for commercial use.</div>
+    <div class="footer">Created by <a class="ext-link" href="https://www.linkedin.com/in/ivomajors/" target="_blank" rel="noopener noreferrer">Ivo Majors</a>. Not for commercial use.</div>
   </div>
 
   <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
