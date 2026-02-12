@@ -100,6 +100,64 @@
       gap: 14px;
     }
 
+    .setup {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid #e7ecf3;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+    }
+
+    .setup label {
+      font-size: 13px;
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .setup .options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .setup .options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .setup .options input {
+      accent-color: #118ab2;
+    }
+
+    .setup .note {
+      margin: 0;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .hint {
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.35;
+    }
+
 
     .group-grid {
       display: grid;
@@ -433,9 +491,19 @@
         <h2>Campaign Inputs</h2>
         <p class="note">Start by entering data from your lift study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
+          <div class="setup" id="setupBox">
+            <label>Study setup</label>
+            <div class="options">
+              <label><input type="radio" name="setup" value="holdout" checked /> Incremental Lift (Holdout)</label>
+              <label><input type="radio" name="setup" value="ab" /> Variant vs Variant (A/B)</label>
+            </div>
+            <p class="note" id="setupNote">Control is no campaign activity. You’re measuring incremental impact.</p>
+          </div>
+
           <div class="group-grid">
             <div class="group-box">
-              <h3>Control Group</h3>
+              <h3 id="controlTitle">Control Group</h3>
+              <p class="hint" id="controlHint">Your baseline experience.</p>
               <div class="input-row">
                 <label for="controlSize">Sample Size (n₁)</label>
                 <input id="controlSize" type="number" min="1" value="500" />
@@ -446,7 +514,8 @@
               </div>
             </div>
             <div class="group-box">
-              <h3>Test Group</h3>
+              <h3 id="testTitle">Test Group</h3>
+              <p class="hint" id="testHint">Your new experience.</p>
               <div class="input-row">
                 <label for="testSize">Sample Size (n₂)</label>
                 <input id="testSize" type="number" min="1" value="500" />
@@ -457,7 +526,8 @@
               </div>
             </div>
           </div>
-          <button class="btn" id="calcBtn">Calculate significance</button>
+
+          <button class="btn" id="calcBtn">Calculate results</button>
           <div class="note" id="validation"></div>
         </div>
       </section>
@@ -476,6 +546,10 @@
               <g id="barsAnnot"></g>
             </svg>
           </div>
+          <div class="chart-title">
+            <h3>Summary</h3>
+          </div>
+          <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
           <div class="chart-title">
             <h3>Analysis</h3>
           </div>
@@ -496,16 +570,16 @@
               </div>
               <div class="result-card tip-target" id="tileSe" data-tip="">
                 <div class="result-icon" style="background:#eef2ff">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <svg id="relIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M12 3v10" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
                     <path d="M8 13c.9 1.2 2.2 2 4 2s3.1-.8 4-2" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
                     <path d="M6 21h12" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Standard Error (Noise)</div>
+                  <div class="result-label">Relative Increase</div>
                   <div class="result-value" id="se">—</div>
-                  <div class="result-unit">percentage points</div>
+                  <div class="result-unit">percent</div>
                 </div>
               </div>
               <div class="result-card tip-target" id="tileZ" data-tip="">
@@ -567,7 +641,7 @@
             </div>
           </div>
           <div class="chart-title freq-only" id="freqTitle">
-            <h3>Effect vs Chance (Z-Score)</h3>
+            <h3>Is the result significant? (Z-Score)</h3>
           </div>
           <div class="chart freq-only" id="freqChartWrap">
             <svg id="curve" viewBox="0 0 600 300" width="100%" height="100%" role="img" aria-label="Effect vs chance (Z-score)">
@@ -637,7 +711,7 @@
             </svg>
           </div>
           <div class="chart-title bayes-only" id="bayesTitle">
-            <h3>Bayesian Probability Distribution</h3>
+            <h3>Chance the Test wins over Control? (Posterior Probability)</h3>
           </div>
           <div class="chart bayes-only" id="bayesChartWrap">
             <svg id="bayesChart" viewBox="0 0 600 260" width="100%" height="100%" role="img" aria-label="Bayesian posterior distributions">
@@ -651,10 +725,6 @@
               <g id="bayesCallout"></g>
             </svg>
           </div>
-          <div class="chart-title">
-            <h3>Summary</h3>
-          </div>
-          <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
         </div>
       </section>
     </div>
@@ -672,9 +742,15 @@
     const validation = document.getElementById('validation');
     const bayesFields = Array.from(document.querySelectorAll('.bayes-only'));
     const calcBtn = document.getElementById('calcBtn');
-
+    const setupInputs = Array.from(document.querySelectorAll('input[name="setup"]'));
+    const setupNote = document.getElementById('setupNote');
+    const controlTitle = document.getElementById('controlTitle');
+    const testTitle = document.getElementById('testTitle');
+    const controlHint = document.getElementById('controlHint');
+    const testHint = document.getElementById('testHint');
     const liftEl = document.getElementById('lift');
     const seEl = document.getElementById('se');
+    const relIcon = document.getElementById('relIcon');
     const zEl = document.getElementById('zscore');
     const pEl = document.getElementById('pscore');
     const confidenceEl = document.getElementById('confidence');
@@ -728,6 +804,30 @@
     const tooltip = document.getElementById('tooltip');
 
     const Z_CRIT_95 = 1.959963984540054;
+
+    function getSetup() {
+      const selected = setupInputs.find(input => input.checked);
+      return selected ? selected.value : 'ab';
+    }
+
+    function updateSetupUI() {
+      const setup = getSetup();
+      if (!controlTitle || !testTitle || !controlHint || !testHint || !setupNote) return;
+      const isHoldout = setup === 'holdout';
+      if (isHoldout) {
+        controlTitle.textContent = 'Holdout';
+        testTitle.textContent = 'Exposed';
+        controlHint.textContent = 'People not shown the campaign.';
+        testHint.textContent = 'People shown the campaign.';
+        setupNote.textContent = 'Control is no campaign activity. You’re measuring incremental impact.';
+      } else {
+        controlTitle.textContent = 'Control Variant';
+        testTitle.textContent = 'Test Variant';
+        controlHint.textContent = 'Your current setup (baseline).';
+        testHint.textContent = 'The new setup you are testing.';
+        setupNote.textContent = 'Both groups ran campaigns. You’re measuring which version wins.';
+      }
+    }
 
     function normalPdf(x) {
       return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
@@ -938,8 +1038,9 @@
 
       bayesGrid.innerHTML = grid.join('');
 
-      const controlLabel = `Control`;
-      const testLabel = `Test`;
+      const setup = getSetup();
+      const controlLabel = setup === 'holdout' ? 'Holdout' : 'Control';
+      const testLabel = setup === 'holdout' ? 'Exposed' : 'Test';
       const legendW = 160;
       const legendH = 56;
       const legendX = W - padR - legendW;
@@ -978,7 +1079,7 @@
       const liftW = 112;
 
       const controlColor = '#4f9cff';
-      const liftColor = '#2dd4bf';
+      const liftColor = delta < 0 ? '#f472b6' : '#2dd4bf';
       const testColor = '#7c3aed';
 
       const grid = [];
@@ -1017,6 +1118,9 @@
 
       const liftLabel = `${delta >= 0 ? '+' : ''}${formatPP(delta)}`;
       const confText = `${formatPercent(confValue)} ${confLabel}`;
+      const setup = getSetup();
+      const controlLabel = setup === 'holdout' ? 'Holdout' : 'Control';
+      const testLabel = setup === 'holdout' ? 'Exposed' : 'Test';
 
       barsAnnot.innerHTML = [
         connector(controlX1 + 10, controlTopY, liftX0 - 10, y(p1)),
@@ -1024,9 +1128,9 @@
         `<text x="${xControl}" y="${controlTopY - 10}" text-anchor="middle" font-size="12" fill="${controlColor}" font-weight="700">${(p1 * 100).toFixed(2)}%</text>`,
         `<text x="${xTest}" y="${testTopY - 10}" text-anchor="middle" font-size="12" fill="${testColor}" font-weight="700">${(p2 * 100).toFixed(2)}%</text>`,
         `<text x="${xLift}" y="${liftTopY + liftH / 2 + 4}" text-anchor="middle" font-size="12" fill="#063b36" font-weight="800">${escapeText(liftLabel)}</text>`,
-        `<text x="${xControl}" y="${baseY + 28}" text-anchor="middle" font-size="14" fill="#334155" font-weight="700">Control</text>`,
+        `<text x="${xControl}" y="${baseY + 28}" text-anchor="middle" font-size="14" fill="#334155" font-weight="700">${escapeText(controlLabel)}</text>`,
         `<text x="${xLift}" y="${baseY + 28}" text-anchor="middle" font-size="14" fill="#334155" font-weight="700">Lift</text>`,
-        `<text x="${xTest}" y="${baseY + 28}" text-anchor="middle" font-size="14" fill="#334155" font-weight="700">Test</text>`,
+        `<text x="${xTest}" y="${baseY + 28}" text-anchor="middle" font-size="14" fill="#334155" font-weight="700">${escapeText(testLabel)}</text>`,
         `<text x="${xLift}" y="${liftTopY + liftH + 22}" text-anchor="middle" font-size="12" fill="#0d1b2a" font-weight="800">${escapeText(confText)}</text>`,
         `<text x="${xControl}" y="${baseY + 42}" text-anchor="middle" font-size="11" fill="#5b6777">${escapeText(`${c1}/${n1}`)}</text>`,
         `<text x="${xTest}" y="${baseY + 42}" text-anchor="middle" font-size="11" fill="#5b6777">${escapeText(`${c2}/${n2}`)}</text>`,
@@ -1215,8 +1319,8 @@
       }
     });
 
-    function interpretSummary({ delta, lift, confidence, pValue, bayesInfo, mode }) {
-      if (!isFinite(pValue)) return 'Enter valid group sizes and conversions to see interpretation.';
+    function interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup }) {
+      if (!isFinite(pValue)) return 'Enter valid group sizes and successes to see interpretation.';
       const pp = formatPP(delta);
       const conf = formatPercent(confidence);
       const confidenceLevel = confidence;
@@ -1230,31 +1334,41 @@
       const tone = delta >= 0
         ? (significant ? (magnitude || 'positive') : 'positive but inconclusive')
         : (significant ? 'concerning' : 'concerning but inconclusive');
+      const controlName = setup === 'holdout' ? 'Holdout' : 'Control';
+      const testName = setup === 'holdout' ? 'Exposed' : 'Test';
       const nextStep = significant
         ? (delta >= 0
-          ? 'Evaluate cost effectiveness vs control group. Scale the campaign gradually and monitor downstream KPIs (CPA, LTV) to confirm durability.'
+          ? `Evaluate cost effectiveness vs ${controlName.toLowerCase()}. Scale gradually and monitor downstream KPIs (CPA, LTV) to confirm durability.`
           : 'Do not scale. Reevaluate the campaign creative, offer, and targeting before retesting.')
         : (delta >= 0
           ? 'Gather more data before scaling.'
           : 'Reevaluate creative, offer, and targeting before retesting.');
       const bayesLine = bayesInfo
-        ? `<li><strong>Chance of improvement:</strong> There is a <strong>${bayesInfo.probPct}</strong> probability that the Test version is actually superior to the Control in the long run.</li>
-        <li><strong>Credible Interval:</strong> There is <strong>95%</strong> probability the Test group’s true conversion rate is between <strong>${bayesInfo.rateLo}</strong> and <strong>${bayesInfo.rateHi}</strong>.</li>`
+        ? `<li><strong>Chance of improvement:</strong> There is a <strong>${bayesInfo.probPct}</strong> probability that <strong>${testName}</strong> is actually superior to <strong>${controlName}</strong> in the long run.</li>
+        <li><strong>Credible Interval:</strong> There is <strong>95%</strong> probability the <strong>${testName}</strong> group’s true conversion rate is between <strong>${bayesInfo.rateLo}</strong> and <strong>${bayesInfo.rateHi}</strong>.</li>`
         : '';
       const freqLine = `<li><strong>Significance:</strong> <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is indicative but still inconclusive (often used for tactical decisions).' : 'This does not clear the 80% benchmark.')}</li>`;
       const winnerLine = delta === 0
-        ? 'The Test Group did not outperform the Control Group.'
-        : (delta > 0 ? 'The Test Group outperformed the Control Group.' : 'The Control Group outperformed the Test Group.');
+        ? `No difference between ${testName} and ${controlName}.`
+        : (delta > 0
+          ? `${testName} outperformed ${controlName}.`
+          : `${controlName} outperformed ${testName}.`);
       const absRel = isFinite(lift) ? Math.abs(lift) : NaN;
       const relText = isFinite(absRel) ? formatPercent(absRel) : '—';
       const liftLine = delta === 0
-        ? `You saw no difference in conversion (<strong>${pp}</strong> absolute).`
-        : `You saw a <strong>${relText}</strong> relative ${delta >= 0 ? 'increase' : 'decrease'} in conversion (<strong>${formatPPValue(Math.abs(delta))}</strong> percentage points absolute).`;
+        ? `You saw no difference in conversion rate (<strong>${pp}</strong> absolute).`
+        : `You saw a <strong>${relText}</strong> relative ${delta >= 0 ? 'increase' : 'decrease'} in conversion rate (<strong>${formatPPValue(Math.abs(delta))}</strong> percentage points absolute).`;
       let verdictText = '';
       if (significant) {
-        verdictText = delta > 0
-          ? 'This result supports moving forward with the Test version.'
-          : 'This result supports sticking with the Control version.';
+        if (setup === 'holdout') {
+          verdictText = delta > 0
+            ? 'This result supports scaling the campaign exposure.'
+            : 'This result supports keeping the campaign off (or reducing exposure).';
+        } else {
+          verdictText = delta > 0
+            ? 'This result supports moving forward with the Test variant.'
+            : 'This result supports sticking with the Control variant.';
+        }
       } else if (directional) {
         verdictText = delta > 0
           ? 'This result is indicative and directionally positive, but not strong enough to recommend switching yet.'
@@ -1282,8 +1396,8 @@
       const c2 = Number(testConv.value);
 
       if (n1 <= 0 || n2 <= 0) return 'Group sizes must be greater than zero.';
-      if (c1 < 0 || c2 < 0) return 'Conversions cannot be negative.';
-      if (c1 > n1 || c2 > n2) return 'Conversions cannot exceed group size.';
+      if (c1 < 0 || c2 < 0) return 'Successes cannot be negative.';
+      if (c1 > n1 || c2 > n2) return 'Successes cannot exceed sample size.';
       return '';
     }
 
@@ -1311,10 +1425,10 @@
       const z = se === 0 ? 0 : delta / se;
       const pValue = 2 * (1 - normalCdf(Math.abs(z)));
       const confidence = 1 - pValue;
-      const mode = 'both';
+      const setup = getSetup();
 
       liftEl.textContent = formatPPValue(delta);
-      seEl.textContent = formatPPValue(se);
+      seEl.textContent = formatPercentValue(lift);
       zEl.textContent = `${(isFinite(z) ? z : 0).toFixed(2)}x`;
       pEl.textContent = formatPercentValue(pValue);
       confidenceLabel.textContent = 'Significance';
@@ -1352,7 +1466,21 @@
       const p2Text = `${c2}/${n2} = ${formatRate(p2)}`;
       const liftNote = p1 === 0 ? ' Control rate is 0, so lift uses denominator 1 to avoid division by zero.' : '';
       tileLift.setAttribute('data-tip', `Absolute lift (pp) = p2 - p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`);
-      tileSe.setAttribute('data-tip', `Pooled rate = (${c1} + ${c2}) / (${n1} + ${n2}) = ${formatRate(pooled)}. SE (noise) = sqrt(p_pool(1 - p_pool) * (1/${n1} + 1/${n2})) = ${formatPP(se)}.`);
+      tileSe.setAttribute('data-tip', `Relative increase = (p2 - p1) / p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Relative increase = ${formatPercent(lift)}.`);
+      if (relIcon) {
+        const isPos = lift > 0;
+        const isNeg = lift < 0;
+        const iconStroke = isPos ? '#16a34a' : (isNeg ? '#ef4444' : '#334155');
+        const iconBg = isPos ? '#eafff6' : (isNeg ? '#fff1f2' : '#eef2ff');
+        relIcon.parentElement.style.background = iconBg;
+        relIcon.innerHTML = isNeg
+          ? `<path d="M12 4v11" stroke="${iconStroke}" stroke-width="2.4" stroke-linecap="round"/>
+             <path d="M8 13c.9 1.2 2.2 2 4 2s3.1-.8 4-2" stroke="${iconStroke}" stroke-width="2.4" stroke-linecap="round"/>
+             <path d="M6 21h12" stroke="${iconStroke}" stroke-width="2.4" stroke-linecap="round"/>`
+          : `<path d="M12 20V9" stroke="${iconStroke}" stroke-width="2.4" stroke-linecap="round"/>
+             <path d="M8 11c.9-1.2 2.2-2 4-2s3.1.8 4 2" stroke="${iconStroke}" stroke-width="2.4" stroke-linecap="round"/>
+             <path d="M6 3h12" stroke="${iconStroke}" stroke-width="2.4" stroke-linecap="round"/>`;
+      }
       tileZ.setAttribute('data-tip', `Z = (p2 - p1) / SE. Delta = p2 - p1 = ${formatPP(delta)}. Z = ${formatPP(delta)} / ${formatPP(se)} = ${formatNumber(z)}.`);
       tileP.setAttribute('data-tip', `Two-tailed: p = 2 * (1 - Φ(|z|)). With |z| = ${formatNumber(Math.abs(z))}, p = ${formatNumber(pValue)}.`);
       tileConfidence.setAttribute('data-tip', `Significance (1 - p): ${formatPercent(confidence)} (p = ${pValue.toFixed(4)}). This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.`);
@@ -1431,7 +1559,7 @@
       }
       // Bayesian chance of improvement is shown in the bar chart + summary.
 
-      commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, mode });
+      commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup });
 
       buildNoiseBands(z);
       buildShade(z);
@@ -1452,6 +1580,13 @@
     }
 
     document.getElementById('calcBtn').addEventListener('click', calculate);
+    setupInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        validation.textContent = '';
+        updateSetupUI();
+        calculate();
+      });
+    });
     [controlSize, controlConv, testSize, testConv].forEach(el => {
       el.addEventListener('input', () => {
         validation.textContent = '';
@@ -1459,6 +1594,7 @@
     });
 
     buildCurve();
+    updateSetupUI();
     setModeUI();
     calculate();
   </script>
