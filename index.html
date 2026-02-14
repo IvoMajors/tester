@@ -653,7 +653,7 @@
               <div class="v" id="tkSig">—</div>
             </div>
             <div class="takeaway">
-              <div class="k">Chance Improve</div>
+              <div class="k">P(Improvement)</div>
               <div class="v" id="tkChance">—</div>
             </div>
           </div>
@@ -1622,9 +1622,9 @@
           ? 'Gather more data before scaling.'
           : 'Reevaluate creative, offer, and targeting before retesting.');
       const bayesLine = bayesInfo
-        ? `<li><strong>Chance of improvement:</strong> There is a <strong>${bayesInfo.probPct}</strong> probability that <strong>${testName}</strong> is actually superior to <strong>${controlName}</strong> in the long run.</li>
+        ? `<li><strong>Probability of Improvement:</strong> There is a <strong>${bayesInfo.probPct}</strong> probability that <strong>${testName}</strong> is actually superior to <strong>${controlName}</strong> in the long run.</li>
         <li><strong>Credible Interval:</strong> There is <strong>95%</strong> probability the <strong>${testName}</strong> group’s true conversion rate is between <strong>${bayesInfo.rateLo}</strong> and <strong>${bayesInfo.rateHi}</strong>.</li>`
-        : `<li><strong>Chance of improvement:</strong> There is a <strong>98.2%</strong> probability that <strong>${testName}</strong> is actually superior to <strong>${controlName}</strong> in the long run.</li>`;
+        : `<li><strong>Probability of Improvement:</strong> There is a <strong>98.2%</strong> probability that <strong>${testName}</strong> is actually superior to <strong>${controlName}</strong> in the long run.</li>`;
       const freqLine = `<li><strong>Significance:</strong> <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is indicative but still inconclusive (often used for tactical decisions).' : 'This does not clear the 80% benchmark.')}</li>`;
       const winnerLine = delta === 0
         ? `No difference between ${testName} and ${controlName}.`
@@ -1696,7 +1696,7 @@
       const postB2 = b + (safeN2 - safeC2);
       drawBayesPosterior(postA1, postB1, postA2, postB2, p1, p2);
       if (showPlaceholder && bayesCallout) {
-        const calloutText = '98.20% chance of improvement';
+        const calloutText = '98.20% P(Improvement)';
         const w = 240;
         const h = 32;
         const x = 600 - 26 - w;
@@ -1953,7 +1953,7 @@
         tileZ.setAttribute('data-tip', `Chance the ${TEST_NAME} wins over ${CONTROL_NAME} (posterior probability): ${(prob * 100).toFixed(1)}%. 95% credible ${TEST_NAME} rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
         // Keep bar chart showing Significance (1 - p), not Bayesian probability.
         if (bayesCallout) {
-          const calloutText = `${(prob * 100).toFixed(2)}% chance of improvement`;
+          const calloutText = `${(prob * 100).toFixed(2)}% P(Improvement)`;
           const w = 240;
           const h = 32;
           const x = 600 - 26 - w;
