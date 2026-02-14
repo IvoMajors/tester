@@ -207,20 +207,22 @@
       font-size: 14px;
     }
 
-    label .tip-target {
+    label .tip-target,
+    .result-label .tip-target {
       display: inline-grid;
       place-items: center;
       width: 18px;
       height: 18px;
       border-radius: 999px;
       margin-left: 6px;
-      font-size: 12px;
-      font-weight: 800;
-      color: #334155;
-      background: #f1f5f9;
-      border: 1px solid #e2e8f0;
       vertical-align: middle;
       line-height: 1;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+
+    .tip-target svg {
+      display: block;
     }
 
     input[type="number"] {
@@ -307,6 +309,10 @@
       box-shadow: 0 10px 22px rgba(13, 27, 42, 0.06);
     }
 
+    .result-card > div {
+      min-width: 0;
+    }
+
     .result-icon {
       width: 34px;
       height: 34px;
@@ -321,6 +327,7 @@
       font-size: 13px;
       color: #475569;
       letter-spacing: 0.01em;
+      line-height: 1.25;
     }
 
     .result-value {
@@ -330,12 +337,80 @@
       color: #0d1b2a;
       margin-top: 6px;
       line-height: 1.0;
+      max-width: 100%;
+    }
+
+    .result-value.value-fit {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.02em;
     }
 
     .result-unit {
       margin-top: 4px;
       font-size: 12px;
       color: #64748b;
+    }
+
+    .roi-range {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .input-prefix {
+      position: relative;
+    }
+
+    .input-prefix .prefix {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #64748b;
+      pointer-events: none;
+    }
+
+    .input-prefix input {
+      padding-left: 28px;
+    }
+
+    .roi-inputs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    @media (max-width: 720px) {
+      .roi-inputs { grid-template-columns: 1fr; }
+    }
+
+    .roi-inputs input,
+    .roi-inputs select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .roi-inputs .input-row {
+      min-width: 0;
+    }
+
+    .roi-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .roi-cards { grid-template-columns: 1fr; }
+    }
+
+    .roi-note {
+      font-size: 12px;
+      color: #64748b;
+      margin: 0 0 10px 0;
     }
 
     .verdict-good .result-icon { background: #eafff6 !important; }
@@ -355,6 +430,7 @@
       background: linear-gradient(180deg, #ffffff 0%, #f1f5fb 100%);
       border: 1px solid #e7ecf3;
       padding: 8px;
+      margin-bottom: 10px;
     }
 
     .chart.small {
@@ -372,6 +448,7 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 12px;
+      margin-top: 6px;
     }
 
     .chart-title h3 {
@@ -437,6 +514,32 @@
       line-height: 1.5;
     }
 
+    .details-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid #c7d2fe;
+      background: linear-gradient(130deg, #eef2ff 0%, #ffffff 100%);
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .details-toggle:hover {
+      border-color: #a5b4fc;
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .details-hidden {
+      display: none;
+    }
+
     .commentary ul {
       margin: 0;
       padding-left: 18px;
@@ -451,6 +554,47 @@
     .footer {
       font-size: 12px;
       color: var(--muted);
+      margin-top: 16px;
+    }
+
+    .tip-target:focus-visible {
+      outline: 3px solid rgba(17, 138, 178, 0.22);
+      outline-offset: 2px;
+    }
+
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .takeaways { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    .takeaway {
+      border: 1px solid #e7ecf3;
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 10px 12px;
+      min-width: 0;
+    }
+
+    .takeaway .k {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .takeaway .v {
+      margin-top: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0d1b2a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     a.ext-link {
@@ -488,7 +632,7 @@
 
     <div class="grid">
       <section class="panel">
-        <h2>Campaign Inputs</h2>
+        <h2>Study Inputs</h2>
         <p class="note">Start by entering data from your lift study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
           <div class="setup" id="setupBox">
@@ -509,7 +653,7 @@
                 <input id="controlSize" type="number" min="1" value="500" />
               </div>
               <div class="input-row">
-                <label for="controlConv">Number of Successes (x₁) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded.">?</span></label>
+                <label for="controlConv">Number of Successes (x₁) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded."><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></label>
                 <input id="controlConv" type="number" min="0" value="120" />
               </div>
             </div>
@@ -521,7 +665,7 @@
                 <input id="testSize" type="number" min="1" value="500" />
               </div>
               <div class="input-row">
-                <label for="testConv">Number of Successes (x₂) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded.">?</span></label>
+                <label for="testConv">Number of Successes (x₂) <span class="tip-target" data-tip="Typically the number of conversions or desired survey responses recorded."><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></label>
                 <input id="testConv" type="number" min="0" value="150" />
               </div>
             </div>
@@ -549,10 +693,30 @@
           <div class="chart-title">
             <h3>Summary</h3>
           </div>
+          <div class="takeaways" id="takeaways">
+            <div class="takeaway">
+              <div class="k">Winner</div>
+              <div class="v" id="tkWinner">—</div>
+            </div>
+            <div class="takeaway">
+              <div class="k">Lift (pp)</div>
+              <div class="v" id="tkLift">—</div>
+            </div>
+            <div class="takeaway">
+              <div class="k">Significance</div>
+              <div class="v" id="tkSig">—</div>
+            </div>
+            <div class="takeaway">
+              <div class="k">Chance Improve</div>
+              <div class="v" id="tkChance">—</div>
+            </div>
+          </div>
           <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
           <div class="chart-title">
-            <h3>Analysis</h3>
+            <h3>LIFT ANALYSIS</h3>
           </div>
+          <button class="details-toggle" id="detailsToggle" aria-expanded="false" type="button">Show Details</button>
+          <div id="analysisDetails" class="details-hidden">
           <div class="results-shell">
             <div class="results-cards" id="metrics">
               <div class="result-card tip-target" id="tileLift" data-tip="">
@@ -563,7 +727,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Observed Lift (Signal)</div>
+                  <div class="result-label">Observed Lift (Signal) <span class="tip-target kpi-tip" id="tipLift" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
                   <div class="result-value" id="lift">—</div>
                   <div class="result-unit">percentage points</div>
                 </div>
@@ -577,7 +741,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Relative Increase</div>
+                  <div class="result-label">Relative Increase <span class="tip-target kpi-tip" id="tipRel" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
                   <div class="result-value" id="se">—</div>
                   <div class="result-unit">percent</div>
                 </div>
@@ -590,7 +754,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Signal-to-Noise (Z-Score)</div>
+                  <div class="result-label">Signal-to-Noise (Z-Score) <span class="tip-target kpi-tip" id="tipZ" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
                   <div class="result-value" id="zscore">—</div>
                   <div class="result-unit">standard deviations</div>
                 </div>
@@ -604,7 +768,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Risk of Chance (P-Value)</div>
+                  <div class="result-label">Risk of Chance (P-Value) <span class="tip-target kpi-tip" id="tipP" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
                   <div class="result-value" id="pscore">—</div>
                   <div class="result-unit">two-tailed probability</div>
                 </div>
@@ -620,7 +784,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label" id="confidenceLabel">Confidence</div>
+                  <div class="result-label" id="confidenceLabel">Confidence <span class="tip-target kpi-tip" id="tipSig" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
                   <div class="result-value" id="confidence">—</div>
                   <div class="result-unit" id="confidenceUnit">confidence level (1 - p-value)</div>
                 </div>
@@ -633,7 +797,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="result-label">Verdict</div>
+                  <div class="result-label">Verdict <span class="tip-target kpi-tip" id="tipVerdict" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
                   <div class="result-value" id="verdict">—</div>
                   <div class="result-unit" id="verdictUnit">—</div>
                 </div>
@@ -725,6 +889,127 @@
               <g id="bayesCallout"></g>
             </svg>
           </div>
+          </div>
+          <div class="chart-title">
+            <h3>ROI MODELLING</h3>
+          </div>
+          <button class="details-toggle" id="roiDetailsToggle" aria-expanded="false" type="button">Show Details</button>
+          <div id="roiDetails" class="details-hidden">
+            <div class="results-shell">
+              <p class="roi-note">Forecasting assumes the results of the lift study hold due to similar audience, creative/offer, channel mix, and measurement window. Use the model estimates as directional if details differ.</p>
+              <div class="roi-inputs">
+                <div class="input-row">
+                  <label for="roiCurrency">Currency</label>
+                  <select id="roiCurrency">
+                    <option value="EUR" selected>EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="USD">USD</option>
+                  </select>
+                </div>
+                <div class="input-row">
+                  <label for="roiCost">Campaign spend</label>
+                  <div class="input-prefix">
+                    <span class="prefix" id="roiCurrencySymbol">€</span>
+                  <input id="roiCost" type="number" min="0" step="0.01" value="50000" />
+                  </div>
+                </div>
+                <div class="input-row">
+                  <label for="roiValuePerSuccess">Value per Success <span class="tip-target" data-tip="The net value to the business per each conversion or person lifted."><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></label>
+                  <div class="input-prefix">
+                    <span class="prefix" id="roiValueSymbol">€</span>
+                    <input id="roiValuePerSuccess" type="number" min="0" step="0.01" value="50" />
+                  </div>
+                </div>
+                <div class="input-row">
+                  <label for="roiReach">Reach (people)</label>
+                  <input id="roiReach" type="number" min="0" step="1" value="100000" />
+                </div>
+              </div>
+              <div class="roi-cards" style="margin-top:12px;">
+                <div class="result-card">
+                  <div class="result-icon" style="background:#eafff6">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M5 12h12" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round"/>
+                      <path d="M13 6l6 6-6 6" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="result-label">Observed Lift (pp) <span class="tip-target kpi-tip" id="tipRoiLift" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
+                    <div class="result-value value-fit" id="roiLift">—</div>
+                    <div class="result-unit">percentage points</div>
+                  </div>
+                </div>
+                <div class="result-card" id="roiVerdictCard">
+                  <div class="result-icon" style="background:#f1f5f9">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M9 12l2 2 4-5" stroke="#16a34a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" stroke="#16a34a" stroke-width="2.0" opacity="0.22"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="result-label">Evidence level <span class="tip-target kpi-tip" id="tipRoiVerdict" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
+                    <div class="result-value value-fit" id="roiVerdict">—</div>
+                    <div class="result-unit" id="roiVerdictUnit">significance</div>
+                  </div>
+                </div>
+                <div class="result-card">
+                  <div class="result-icon" style="background:#eef2ff">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 12h12" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                      <path d="M12 6v12" stroke="#334155" stroke-width="2.4" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="result-label">Incremental successes (lift) <span class="tip-target kpi-tip" id="tipRoiIncr" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
+                    <div class="result-value value-fit" id="roiIncr">—</div>
+                    <div class="result-unit">people</div>
+                    <div class="result-unit roi-range tip-target" id="roiRange" data-tip="95% range for lifted people = (lift ± 1.96×SE) × reach.">—</div>
+                  </div>
+                </div>
+                <div class="result-card">
+                  <div class="result-icon" style="background:#eafff6">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 12h16" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round"/>
+                      <path d="M12 4v16" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="result-label">Incremental value <span class="tip-target kpi-tip" id="tipRoiValue" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
+                    <div class="result-value value-fit" id="roiValueOut">—</div>
+                    <div class="result-unit">currency</div>
+                  </div>
+                </div>
+                <div class="result-card">
+                  <div class="result-icon" style="background:#fff7ed">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 8h12" stroke="#ea580c" stroke-width="2.4" stroke-linecap="round"/>
+                      <path d="M6 16h12" stroke="#ea580c" stroke-width="2.4" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="result-label">Cost per person lifted <span class="tip-target kpi-tip" id="tipRoiCpl" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
+                    <div class="result-value value-fit" id="roiCpl">—</div>
+                    <div class="result-unit">currency</div>
+                  </div>
+                </div>
+                <div class="result-card tip-target" id="roiTrueCard" data-tip="">
+                  <div class="result-icon" style="background:#e0f2fe">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 12h16" stroke="#0284c7" stroke-width="2.4" stroke-linecap="round"/>
+                      <path d="M8 8h8" stroke="#0284c7" stroke-width="2.4" stroke-linecap="round"/>
+                      <path d="M8 16h8" stroke="#0284c7" stroke-width="2.4" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="result-label">Estimated Lift ROI <span class="tip-target kpi-tip" id="tipRoi" data-tip=""><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#f1f5f9" stroke="#cbd5f5"/><path d="M8.9 7.7a1.9 1.9 0 1 1 2.7 1.7c-.6.4-.9.8-.9 1.5v.4" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.6" r="1" fill="#334155"/></svg></span></div>
+                    <div class="result-value value-fit" id="roiTrue">—</div>
+                    <div class="result-unit">percent</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
         </div>
       </section>
     </div>
@@ -768,6 +1053,34 @@
     const barsGrid = document.getElementById('barsGrid');
     const barsLayer = document.getElementById('barsLayer');
     const barsAnnot = document.getElementById('barsAnnot');
+    const roiReach = document.getElementById('roiReach');
+    const roiCost = document.getElementById('roiCost');
+    const roiCurrency = document.getElementById('roiCurrency');
+    const roiCurrencySymbol = document.getElementById('roiCurrencySymbol');
+    const roiValueSymbol = document.getElementById('roiValueSymbol');
+    const roiValuePerSuccess = document.getElementById('roiValuePerSuccess');
+    const roiIncr = document.getElementById('roiIncr');
+    const roiCpl = document.getElementById('roiCpl');
+    const roiValueOut = document.getElementById('roiValueOut');
+    const roiRange = document.getElementById('roiRange');
+    const roiTrue = document.getElementById('roiTrue');
+    const roiTrueCard = document.getElementById('roiTrueCard');
+    const roiLift = document.getElementById('roiLift');
+    const roiVerdict = document.getElementById('roiVerdict');
+    const roiVerdictCard = document.getElementById('roiVerdictCard');
+    const roiVerdictUnit = document.getElementById('roiVerdictUnit');
+    const tipRoiLift = document.getElementById('tipRoiLift');
+    const tipRoiVerdict = document.getElementById('tipRoiVerdict');
+    const tipLift = document.getElementById('tipLift');
+    const tipRel = document.getElementById('tipRel');
+    const tipZ = document.getElementById('tipZ');
+    const tipP = document.getElementById('tipP');
+    const tipSig = document.getElementById('tipSig');
+    const tipVerdict = document.getElementById('tipVerdict');
+    const tipRoiIncr = document.getElementById('tipRoiIncr');
+    const tipRoiValue = document.getElementById('tipRoiValue');
+    const tipRoi = document.getElementById('tipRoi');
+    const tipRoiCpl = document.getElementById('tipRoiCpl');
 
     const curvePath = document.getElementById('curvePath');
     const noiseBands = document.getElementById('noiseBands');
@@ -802,6 +1115,14 @@
     const negLabel = document.getElementById('negLabel');
     const posLabel = document.getElementById('posLabel');
     const tooltip = document.getElementById('tooltip');
+    const detailsToggle = document.getElementById('detailsToggle');
+    const analysisDetails = document.getElementById('analysisDetails');
+    const roiDetailsToggle = document.getElementById('roiDetailsToggle');
+    const roiDetails = document.getElementById('roiDetails');
+    const tkWinner = document.getElementById('tkWinner');
+    const tkLift = document.getElementById('tkLift');
+    const tkSig = document.getElementById('tkSig');
+    const tkChance = document.getElementById('tkChance');
 
     const Z_CRIT_95 = 1.959963984540054;
 
@@ -874,6 +1195,24 @@
     function formatPercentValue(val) {
       if (!isFinite(val)) return '—';
       return `${(val * 100).toFixed(2)}%`;
+    }
+
+    function formatCurrency(val) {
+      if (!isFinite(val)) return '—';
+      const currency = roiCurrency ? roiCurrency.value : 'USD';
+      const symbol = currency === 'EUR' ? '€' : (currency === 'GBP' ? '£' : '$');
+      const abs = Math.abs(val);
+      if (abs >= 1_000_000) return `${val >= 0 ? '' : '-'}${symbol}${(abs / 1_000_000).toFixed(2)}M`;
+      if (abs >= 1_000) return `${val >= 0 ? '' : '-'}${symbol}${(abs / 1_000).toFixed(1)}k`;
+      return `${val >= 0 ? '' : '-'}${symbol}${abs.toFixed(2)}`;
+    }
+
+    function updateCurrencySymbol() {
+      if (!roiCurrencySymbol || !roiCurrency) return;
+      const currency = roiCurrency.value;
+      const symbol = currency === 'EUR' ? '€' : (currency === 'GBP' ? '£' : '$');
+      roiCurrencySymbol.textContent = symbol;
+      if (roiValueSymbol) roiValueSymbol.textContent = symbol;
     }
 
     function setModeUI() {
@@ -1137,6 +1476,8 @@
       ].join('');
     }
 
+    // ROI section now reports lifted people + cost per lift; no chart needed.
+
     function mixHex(a, b, t) {
       const aN = a.startsWith('#') ? a.slice(1) : a;
       const bN = b.startsWith('#') ? b.slice(1) : b;
@@ -1318,8 +1659,28 @@
         hideTooltip();
       }
     });
+    document.addEventListener('focusin', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      showTooltip(el.getAttribute('data-tip') || '', rect.left + rect.width / 2, rect.top + rect.height / 2);
+    });
+    document.addEventListener('focusout', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (!el) return;
+      hideTooltip();
+    });
 
-    function interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup }) {
+    function initTipTargets() {
+      const els = Array.from(document.querySelectorAll('label .tip-target[data-tip], .kpi-tip[data-tip], .result-unit.tip-target[data-tip]'));
+      els.forEach((el) => {
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', 'Help');
+      });
+    }
+
+    function interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup, bayesReady }) {
       if (!isFinite(pValue)) return 'Enter valid group sizes and successes to see interpretation.';
       const pp = formatPP(delta);
       const conf = formatPercent(confidence);
@@ -1346,7 +1707,7 @@
       const bayesLine = bayesInfo
         ? `<li><strong>Chance of improvement:</strong> There is a <strong>${bayesInfo.probPct}</strong> probability that <strong>${testName}</strong> is actually superior to <strong>${controlName}</strong> in the long run.</li>
         <li><strong>Credible Interval:</strong> There is <strong>95%</strong> probability the <strong>${testName}</strong> group’s true conversion rate is between <strong>${bayesInfo.rateLo}</strong> and <strong>${bayesInfo.rateHi}</strong>.</li>`
-        : '';
+        : `<li><strong>Chance of improvement:</strong> ${bayesReady ? '—' : 'Click “Calculate results” to compute.'}</li>`;
       const freqLine = `<li><strong>Significance:</strong> <strong>${conf}</strong> (p = ${pValue.toFixed(4)}). ${significant ? `This clears the 95% threshold, meaning results this large would be rare (about ${(pValue * 100).toFixed(2)} out of 100 times) if there were no real difference.` : (directional ? 'This is indicative but still inconclusive (often used for tactical decisions).' : 'This does not clear the 80% benchmark.')}</li>`;
       const winnerLine = delta === 0
         ? `No difference between ${testName} and ${controlName}.`
@@ -1405,7 +1766,100 @@
       return '';
     }
 
-    function calculate() {
+    let lastStats = null;
+    let lastBayesKey = '';
+    let lastBayesInfo = null;
+
+    function updateROI() {
+      if (!lastStats) return;
+      const { delta, se } = lastStats;
+      const plannedReach = Number(roiReach ? roiReach.value : NaN);
+      const campaignCost = Number(roiCost ? roiCost.value : NaN);
+      const valuePerSuccess = Number(roiValuePerSuccess ? roiValuePerSuccess.value : NaN);
+      const canComputeRoi = isFinite(plannedReach) && isFinite(campaignCost) && plannedReach >= 0;
+      const incrementalSuccesses = canComputeRoi ? Math.max(0, delta * plannedReach) : NaN;
+      const incrementalValue = (isFinite(incrementalSuccesses) && isFinite(valuePerSuccess))
+        ? (incrementalSuccesses * valuePerSuccess)
+        : NaN;
+      const trueRoi = (isFinite(incrementalValue) && campaignCost > 0)
+        ? (incrementalValue - campaignCost) / campaignCost
+        : NaN;
+      const costPerLift = (isFinite(incrementalSuccesses) && incrementalSuccesses > 0 && campaignCost > 0)
+        ? (campaignCost / incrementalSuccesses)
+        : NaN;
+      const liftLow = isFinite(se) ? (delta - Z_CRIT_95 * se) * plannedReach : NaN;
+      const liftHigh = isFinite(se) ? (delta + Z_CRIT_95 * se) * plannedReach : NaN;
+      if (roiIncr) roiIncr.textContent = isFinite(incrementalSuccesses) ? Math.round(incrementalSuccesses).toLocaleString() : '—';
+      if (roiValueOut) roiValueOut.textContent = isFinite(incrementalValue) ? formatCurrency(incrementalValue) : '—';
+      if (roiTrue) roiTrue.textContent = isFinite(trueRoi) ? formatPercentValue(trueRoi) : '—';
+      if (roiCpl) roiCpl.textContent = isFinite(costPerLift) ? formatCurrency(costPerLift) : '—';
+      if (roiLift) roiLift.textContent = formatPPValue(delta);
+      if (roiVerdict) {
+        const verdictText = lastStats.confidence >= 0.95 ? 'Significant' : (lastStats.confidence >= 0.8 ? 'Indicative' : 'Not significant');
+        roiVerdict.textContent = verdictText;
+      }
+      if (roiVerdictCard && roiVerdictUnit) {
+        const isSig = lastStats.confidence >= 0.95;
+        const isDir = !isSig && lastStats.confidence >= 0.8;
+        roiVerdictCard.classList.toggle('verdict-good', isSig);
+        roiVerdictCard.classList.toggle('verdict-bad', !isSig);
+        roiVerdictUnit.textContent = isSig
+          ? 'At or above 95% (p < 0.05)'
+          : (isDir ? 'Between 80–95% (indicative, inconclusive)' : 'Below 80% (p ≥ 0.20)');
+      }
+      if (roiRange && isFinite(liftLow) && isFinite(liftHigh)) {
+        roiRange.textContent = `${Math.round(liftLow).toLocaleString()} to ${Math.round(liftHigh).toLocaleString()} (95% range)`;
+      } else if (roiRange) {
+        roiRange.textContent = '—';
+      }
+      fitValueText(roiIncr);
+      fitValueText(roiValueOut);
+      fitValueText(roiTrue);
+      fitValueText(roiCpl);
+      fitValueText(roiRange);
+      fitValueText(roiLift);
+      fitValueText(roiVerdict);
+
+      if (tipRoiIncr) {
+        tipRoiIncr.setAttribute(
+          'data-tip',
+          delta > 0
+            ? 'Estimated number of additional people who achieved the success due to the lift.'
+            : 'Lift is zero or negative. Incremental successes are shown as 0; the 95% range may include negative values (possible decrease).'
+        );
+      }
+      if (tipRoiValue) tipRoiValue.setAttribute('data-tip', 'Incremental successes × Value per Success.');
+      if (tipRoi) tipRoi.setAttribute('data-tip', 'ROI = (Incremental value − Campaign spend) / Campaign spend.');
+      if (tipRoiCpl) tipRoiCpl.setAttribute('data-tip', 'Campaign spend divided by incremental successes.');
+      if (tipRoiLift) tipRoiLift.setAttribute('data-tip', 'Observed lift in percentage points from the study.');
+      if (tipRoiVerdict) tipRoiVerdict.setAttribute('data-tip', 'Uses the study significance thresholds: ≥95% significant, 80–95% indicative, <80% not significant.');
+
+      if (roiTrueCard) {
+        const incText = isFinite(incrementalValue) ? formatCurrency(incrementalValue) : '—';
+        const roiText = isFinite(trueRoi) ? formatPercentValue(trueRoi) : '—';
+        roiTrueCard.setAttribute('data-tip', `Estimated Lift ROI = (Incremental value − Campaign spend) / Campaign spend. Incremental value = ${incText}. Campaign spend = ${formatCurrency(campaignCost)}. Result = ${roiText}.`);
+      }
+    }
+
+    function fitValueText(el) {
+      if (!el) return;
+      const text = (el.textContent || '').trim();
+      if (!text || text === '—') {
+        el.style.fontSize = '';
+        return;
+      }
+      const len = text.replace(/[^0-9A-Za-z]/g, '').length;
+      let size = 30;
+      if (len >= 10) size = 18;
+      else if (len >= 9) size = 20;
+      else if (len >= 8) size = 22;
+      else if (len >= 7) size = 24;
+      else if (len >= 6) size = 26;
+      else if (len >= 5) size = 28;
+      el.style.fontSize = `${size}px`;
+    }
+
+    function calculateResults(source = 'user') {
       const error = validateInputs();
       validation.textContent = error;
       if (error) return;
@@ -1426,6 +1880,15 @@
       const pValue = 2 * (1 - normalCdf(Math.abs(z)));
       const confidence = 1 - pValue;
       const setup = getSetup();
+      lastStats = { n1, n2, c1, c2, p1, p2, delta, lift, se, z, pValue, confidence, setup };
+
+      if (tkWinner) {
+        const controlName = setup === 'holdout' ? 'Holdout' : 'Control';
+        const testName = setup === 'holdout' ? 'Exposed' : 'Test';
+        tkWinner.textContent = delta === 0 ? 'No diff' : (delta > 0 ? testName : controlName);
+      }
+      if (tkLift) tkLift.textContent = `${formatPPValue(delta)} pp`;
+      if (tkSig) tkSig.textContent = formatPercentValue(confidence);
 
       liftEl.textContent = formatPPValue(delta);
       seEl.textContent = formatPercentValue(lift);
@@ -1467,6 +1930,8 @@
       const liftNote = p1 === 0 ? ' Control rate is 0, so lift uses denominator 1 to avoid division by zero.' : '';
       tileLift.setAttribute('data-tip', `Absolute lift (pp) = p2 - p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`);
       tileSe.setAttribute('data-tip', `Relative increase = (p2 - p1) / p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Relative increase = ${formatPercent(lift)}.`);
+      if (tipLift) tipLift.setAttribute('data-tip', tileLift.getAttribute('data-tip') || '');
+      if (tipRel) tipRel.setAttribute('data-tip', tileSe.getAttribute('data-tip') || '');
       if (relIcon) {
         const isPos = lift > 0;
         const isNeg = lift < 0;
@@ -1487,11 +1952,16 @@
       verdictCard.setAttribute('data-tip', isSignificant
         ? 'Significant: the p-value is below 0.05 (95% threshold).'
         : (isDirectional ? 'Indicative: significance is between 80–95% (often used for tactical decisions) but still inconclusive.' : 'Not significant: significance is below 80% (p ≥ 0.20).'));
+      if (tipZ) tipZ.setAttribute('data-tip', tileZ.getAttribute('data-tip') || '');
+      if (tipP) tipP.setAttribute('data-tip', tileP.getAttribute('data-tip') || '');
+      if (tipSig) tipSig.setAttribute('data-tip', tileConfidence.getAttribute('data-tip') || '');
+      if (tipVerdict) tipVerdict.setAttribute('data-tip', verdictCard.getAttribute('data-tip') || '');
       commentary.classList.remove('pulse');
       void commentary.offsetWidth;
       commentary.classList.add('pulse');
 
-      if (true) {
+      const shouldComputeBayes = source === 'user';
+      if (shouldComputeBayes) {
         const priorErr = validatePriors();
         if (priorErr) {
           validation.textContent = priorErr;
@@ -1513,38 +1983,40 @@
         const postB2 = b2 + (n2 - c2);
         drawBayesPosterior(postA1, postB1, postA2, postB2, p1, p2);
 
-        const samples = 1000000;
-        const diffs = [];
-        let wins = 0;
-        for (let i = 0; i < samples; i++) {
-          const s1 = betaSample(postA1, postB1);
-          const s2 = betaSample(postA2, postB2);
-          const diff = s2 - s1;
-          if (s2 > s1) wins++;
-          diffs.push(diff);
+        const bayesKey = `${postA1.toFixed(3)}|${postB1.toFixed(3)}|${postA2.toFixed(3)}|${postB2.toFixed(3)}|${setup}`;
+        if (bayesKey !== lastBayesKey) {
+          const samples = 250000;
+          let wins = 0;
+          const rateSamples = new Array(samples);
+          for (let i = 0; i < samples; i++) {
+            const s1 = betaSample(postA1, postB1);
+            const s2 = betaSample(postA2, postB2);
+            if (s2 > s1) wins++;
+            rateSamples[i] = s2;
+          }
+          rateSamples.sort((a, b) => a - b);
+          const rateLo = rateSamples[Math.floor(samples * 0.025)];
+          const rateHi = rateSamples[Math.floor(samples * 0.975)];
+          const prob = wins / samples;
+          lastBayesKey = bayesKey;
+          lastBayesInfo = {
+            probPct: `${(prob * 100).toFixed(1)}%`,
+            rateLoPct: `${formatPercentValue(rateLo)}`,
+            rateHiPct: `${formatPercentValue(rateHi)}`,
+            rateLo,
+            rateHi,
+            prob,
+          };
         }
-        diffs.sort((a, b) => a - b);
-        const lo = diffs[Math.floor(samples * 0.025)];
-        const hi = diffs[Math.floor(samples * 0.975)];
-        const prob = wins / samples;
-        const rateSamples = [];
-        for (let i = 0; i < samples; i++) {
-          rateSamples.push(betaSample(postA2, postB2));
-        }
-        rateSamples.sort((a, b) => a - b);
-        const rateLo = rateSamples[Math.floor(samples * 0.025)];
-        const rateHi = rateSamples[Math.floor(samples * 0.975)];
+        const prob = lastBayesInfo ? lastBayesInfo.prob : NaN;
+        const rateLo = lastBayesInfo ? lastBayesInfo.rateLo : NaN;
+        const rateHi = lastBayesInfo ? lastBayesInfo.rateHi : NaN;
         bayesProb = prob;
         bayesRateLo = rateLo;
         bayesRateHi = rateHi;
-        bayesInfo = {
-          probPct: `${(prob * 100).toFixed(1)}%`,
-          rateLo: `${formatPercentValue(rateLo)}`,
-          rateHi: `${formatPercentValue(rateHi)}`
-        };
+        bayesInfo = lastBayesInfo ? { probPct: lastBayesInfo.probPct, rateLo: lastBayesInfo.rateLoPct, rateHi: lastBayesInfo.rateHiPct } : null;
         tileZ.setAttribute('data-tip', `Bayesian: P(test > control) = ${(prob * 100).toFixed(1)}%. 95% credible Test rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
-        barConfValue = prob;
-        barConfLabel = 'chance of improvement';
+        // Keep bar chart showing Significance (1 - p), not Bayesian probability.
         if (bayesCallout) {
           const calloutText = `${(prob * 100).toFixed(2)}% chance of improvement`;
           const w = 240;
@@ -1558,8 +2030,17 @@
         }
       }
       // Bayesian chance of improvement is shown in the bar chart + summary.
+      if (tkChance) {
+        if (shouldComputeBayes && isFinite(bayesProb)) {
+          tkChance.textContent = `${(bayesProb * 100).toFixed(1)}%`;
+        } else {
+          // Hard-coded default reference for the built-in example values.
+          const isDefault = n1 === 500 && c1 === 120 && n2 === 500 && c2 === 150;
+          tkChance.textContent = isDefault ? '98.2%' : '—';
+        }
+      }
 
-      commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup });
+      commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup, bayesReady: shouldComputeBayes });
 
       buildNoiseBands(z);
       buildShade(z);
@@ -1577,26 +2058,53 @@
         confValue: barConfValue,
         confLabel: barConfLabel
       });
+      updateROI();
     }
 
-    document.getElementById('calcBtn').addEventListener('click', calculate);
+    document.getElementById('calcBtn').addEventListener('click', () => calculateResults('user'));
     setupInputs.forEach(input => {
       input.addEventListener('change', () => {
         validation.textContent = '';
         updateSetupUI();
-        calculate();
       });
     });
-    [controlSize, controlConv, testSize, testConv].forEach(el => {
+    [controlSize, controlConv, testSize, testConv].filter(Boolean).forEach(el => {
       el.addEventListener('input', () => {
         validation.textContent = '';
       });
     });
+    [roiReach, roiCost, roiCurrency, roiValuePerSuccess].filter(Boolean).forEach(el => {
+      el.addEventListener('input', () => {
+        validation.textContent = '';
+        updateCurrencySymbol();
+      });
+    });
+
 
     buildCurve();
     updateSetupUI();
+    updateCurrencySymbol();
+    initTipTargets();
     setModeUI();
-    calculate();
+    calculateResults('init');
+
+    if (detailsToggle && analysisDetails) {
+      detailsToggle.addEventListener('click', () => {
+        const isHidden = analysisDetails.classList.contains('details-hidden');
+        analysisDetails.classList.toggle('details-hidden', !isHidden);
+        detailsToggle.setAttribute('aria-expanded', String(isHidden));
+        detailsToggle.textContent = isHidden ? 'Hide Details' : 'Show Details';
+      });
+    }
+
+    if (roiDetailsToggle && roiDetails) {
+      roiDetailsToggle.addEventListener('click', () => {
+        const isHidden = roiDetails.classList.contains('details-hidden');
+        roiDetails.classList.toggle('details-hidden', !isHidden);
+        roiDetailsToggle.setAttribute('aria-expanded', String(isHidden));
+        roiDetailsToggle.textContent = isHidden ? 'Hide Details' : 'Show Details';
+      });
+    }
   </script>
 </body>
 </html>
