@@ -100,51 +100,6 @@
       gap: 14px;
     }
 
-    .setup {
-      display: grid;
-      gap: 8px;
-      padding: 12px;
-      border: 1px solid #e7ecf3;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
-    }
-
-    .setup label {
-      font-size: 13px;
-      color: #475569;
-      font-weight: 700;
-    }
-
-    .setup .options {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .setup .options label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      font-size: 13px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .setup .options input {
-      accent-color: #118ab2;
-    }
-
-    .setup .note {
-      margin: 0;
-      font-size: 12px;
-      color: #64748b;
-      line-height: 1.4;
-    }
-
     .meta-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -635,19 +590,10 @@
         <h2>Study Inputs</h2>
         <p class="note">Start by entering data from your lift study. Enter the sample sizes and number of successes for both groups.</p>
         <div class="inputs">
-          <div class="setup" id="setupBox">
-            <label>Study setup</label>
-            <div class="options">
-              <label><input type="radio" name="setup" value="holdout" checked /> Incremental Lift (Holdout)</label>
-              <label><input type="radio" name="setup" value="ab" /> Variant vs Variant (A/B)</label>
-            </div>
-            <p class="note" id="setupNote">Control is no campaign activity. You’re measuring incremental impact.</p>
-          </div>
-
           <div class="group-grid">
             <div class="group-box">
-              <h3 id="controlTitle">Control Group</h3>
-              <p class="hint" id="controlHint">Your baseline experience.</p>
+              <h3>Holdout</h3>
+              <p class="hint">Control group not shown the campaign.</p>
               <div class="input-row">
                 <label for="controlSize">Sample Size (n₁)</label>
                 <input id="controlSize" type="number" min="1" value="500" />
@@ -658,8 +604,8 @@
               </div>
             </div>
             <div class="group-box">
-              <h3 id="testTitle">Test Group</h3>
-              <p class="hint" id="testHint">Your new experience.</p>
+              <h3>Exposed</h3>
+              <p class="hint">Test group shown the campaign.</p>
               <div class="input-row">
                 <label for="testSize">Sample Size (n₂)</label>
                 <input id="testSize" type="number" min="1" value="500" />
@@ -683,7 +629,7 @@
             <h3>Lift</h3>
           </div>
           <div class="chart small">
-            <svg id="bars" viewBox="0 0 600 220" width="100%" height="100%" role="img" aria-label="Control vs test conversion rates">
+            <svg id="bars" viewBox="0 0 600 220" width="100%" height="100%" role="img" aria-label="Holdout vs exposed conversion rates">
               <rect x="0" y="0" width="600" height="220" fill="transparent"></rect>
               <g id="barsGrid"></g>
               <g id="barsLayer"></g>
@@ -875,7 +821,7 @@
             </svg>
           </div>
           <div class="chart-title bayes-only" id="bayesTitle">
-            <h3>Chance the Test wins over Control? (Posterior Probability)</h3>
+            <h3>Chance the Exposed wins over Holdout? (Posterior Probability)</h3>
           </div>
           <div class="chart bayes-only" id="bayesChartWrap">
             <svg id="bayesChart" viewBox="0 0 600 260" width="100%" height="100%" role="img" aria-label="Bayesian posterior distributions">
@@ -1027,12 +973,6 @@
     const validation = document.getElementById('validation');
     const bayesFields = Array.from(document.querySelectorAll('.bayes-only'));
     const calcBtn = document.getElementById('calcBtn');
-    const setupInputs = Array.from(document.querySelectorAll('input[name="setup"]'));
-    const setupNote = document.getElementById('setupNote');
-    const controlTitle = document.getElementById('controlTitle');
-    const testTitle = document.getElementById('testTitle');
-    const controlHint = document.getElementById('controlHint');
-    const testHint = document.getElementById('testHint');
     const liftEl = document.getElementById('lift');
     const seEl = document.getElementById('se');
     const relIcon = document.getElementById('relIcon');
@@ -1125,30 +1065,9 @@
     const tkChance = document.getElementById('tkChance');
 
     const Z_CRIT_95 = 1.959963984540054;
+    const CONTROL_NAME = 'Holdout';
+    const TEST_NAME = 'Exposed';
 
-    function getSetup() {
-      const selected = setupInputs.find(input => input.checked);
-      return selected ? selected.value : 'ab';
-    }
-
-    function updateSetupUI() {
-      const setup = getSetup();
-      if (!controlTitle || !testTitle || !controlHint || !testHint || !setupNote) return;
-      const isHoldout = setup === 'holdout';
-      if (isHoldout) {
-        controlTitle.textContent = 'Holdout';
-        testTitle.textContent = 'Exposed';
-        controlHint.textContent = 'People not shown the campaign.';
-        testHint.textContent = 'People shown the campaign.';
-        setupNote.textContent = 'Control is no campaign activity. You’re measuring incremental impact.';
-      } else {
-        controlTitle.textContent = 'Control Variant';
-        testTitle.textContent = 'Test Variant';
-        controlHint.textContent = 'Your current setup (baseline).';
-        testHint.textContent = 'The new setup you are testing.';
-        setupNote.textContent = 'Both groups ran campaigns. You’re measuring which version wins.';
-      }
-    }
 
     function normalPdf(x) {
       return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
@@ -1377,9 +1296,8 @@
 
       bayesGrid.innerHTML = grid.join('');
 
-      const setup = getSetup();
-      const controlLabel = setup === 'holdout' ? 'Holdout' : 'Control';
-      const testLabel = setup === 'holdout' ? 'Exposed' : 'Test';
+      const controlLabel = CONTROL_NAME;
+      const testLabel = TEST_NAME;
       const legendW = 160;
       const legendH = 56;
       const legendX = W - padR - legendW;
@@ -1457,9 +1375,8 @@
 
       const liftLabel = `${delta >= 0 ? '+' : ''}${formatPP(delta)}`;
       const confText = `${formatPercent(confValue)} ${confLabel}`;
-      const setup = getSetup();
-      const controlLabel = setup === 'holdout' ? 'Holdout' : 'Control';
-      const testLabel = setup === 'holdout' ? 'Exposed' : 'Test';
+      const controlLabel = CONTROL_NAME;
+      const testLabel = TEST_NAME;
 
       barsAnnot.innerHTML = [
         connector(controlX1 + 10, controlTopY, liftX0 - 10, y(p1)),
@@ -1680,7 +1597,7 @@
       });
     }
 
-    function interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup, bayesReady }) {
+    function interpretSummary({ delta, lift, confidence, pValue, bayesInfo, bayesReady }) {
       if (!isFinite(pValue)) return 'Enter valid group sizes and successes to see interpretation.';
       const pp = formatPP(delta);
       const conf = formatPercent(confidence);
@@ -1695,8 +1612,8 @@
       const tone = delta >= 0
         ? (significant ? (magnitude || 'positive') : 'positive but inconclusive')
         : (significant ? 'concerning' : 'concerning but inconclusive');
-      const controlName = setup === 'holdout' ? 'Holdout' : 'Control';
-      const testName = setup === 'holdout' ? 'Exposed' : 'Test';
+      const controlName = CONTROL_NAME;
+      const testName = TEST_NAME;
       const nextStep = significant
         ? (delta >= 0
           ? `Evaluate cost effectiveness vs ${controlName.toLowerCase()}. Scale gradually and monitor downstream KPIs (CPA, LTV) to confirm durability.`
@@ -1721,23 +1638,17 @@
         : `You saw a <strong>${relText}</strong> relative ${delta >= 0 ? 'increase' : 'decrease'} in conversion rate (<strong>${formatPPValue(Math.abs(delta))}</strong> percentage points absolute).`;
       let verdictText = '';
       if (significant) {
-        if (setup === 'holdout') {
-          verdictText = delta > 0
-            ? 'This result supports scaling the campaign exposure.'
-            : 'This result supports keeping the campaign off (or reducing exposure).';
-        } else {
-          verdictText = delta > 0
-            ? 'This result supports moving forward with the Test variant.'
-            : 'This result supports sticking with the Control variant.';
-        }
+        verdictText = delta > 0
+          ? 'This result supports scaling the campaign exposure.'
+          : 'This result supports keeping the campaign off (or reducing exposure).';
       } else if (directional) {
         verdictText = delta > 0
-          ? 'This result is indicative and directionally positive, but not strong enough to recommend switching yet.'
-          : 'This result is indicative and directionally negative, but not strong enough to recommend switching yet.';
+          ? 'This result is indicative and directionally positive, but not strong enough to recommend scaling yet.'
+          : 'This result is indicative and directionally negative, but not strong enough to recommend turning the campaign off yet.';
       } else {
         verdictText = delta > 0
-          ? 'This result is not strong enough to recommend the Test version yet.'
-          : 'This result does not support moving away from the Control version.';
+          ? 'This result is not strong enough to recommend scaling yet.'
+          : 'This result does not support scaling the campaign.';
       }
 
       return `<ul>
@@ -1764,6 +1675,26 @@
 
     function validatePriors() {
       return '';
+    }
+
+    function renderBayesFromInputs(n1, c1, n2, c2) {
+      const safeN1 = isFinite(n1) && n1 > 0 ? n1 : 500;
+      const safeN2 = isFinite(n2) && n2 > 0 ? n2 : 500;
+      const safeC1 = isFinite(c1) && c1 >= 0 ? Math.min(c1, safeN1) : 120;
+      const safeC2 = isFinite(c2) && c2 >= 0 ? Math.min(c2, safeN2) : 150;
+      const p1 = safeC1 / safeN1;
+      const p2 = safeC2 / safeN2;
+      const pooledRate = (safeC1 + safeC2) / (safeN1 + safeN2);
+      const EB_PRIOR_STRENGTH = 20;
+      const priorN = EB_PRIOR_STRENGTH;
+      const priorRate = pooledRate;
+      const a = priorRate * priorN + 1;
+      const b = (1 - priorRate) * priorN + 1;
+      const postA1 = a + safeC1;
+      const postB1 = b + (safeN1 - safeC1);
+      const postA2 = a + safeC2;
+      const postB2 = b + (safeN2 - safeC2);
+      drawBayesPosterior(postA1, postB1, postA2, postB2, p1, p2);
     }
 
     let lastStats = null;
@@ -1879,13 +1810,10 @@
       const z = se === 0 ? 0 : delta / se;
       const pValue = 2 * (1 - normalCdf(Math.abs(z)));
       const confidence = 1 - pValue;
-      const setup = getSetup();
-      lastStats = { n1, n2, c1, c2, p1, p2, delta, lift, se, z, pValue, confidence, setup };
+      lastStats = { n1, n2, c1, c2, p1, p2, delta, lift, se, z, pValue, confidence };
 
       if (tkWinner) {
-        const controlName = setup === 'holdout' ? 'Holdout' : 'Control';
-        const testName = setup === 'holdout' ? 'Exposed' : 'Test';
-        tkWinner.textContent = delta === 0 ? 'No diff' : (delta > 0 ? testName : controlName);
+        tkWinner.textContent = delta === 0 ? 'No diff' : (delta > 0 ? TEST_NAME : CONTROL_NAME);
       }
       if (tkLift) tkLift.textContent = `${formatPPValue(delta)} pp`;
       if (tkSig) tkSig.textContent = formatPercentValue(confidence);
@@ -1927,9 +1855,9 @@
 
       const p1Text = `${c1}/${n1} = ${formatRate(p1)}`;
       const p2Text = `${c2}/${n2} = ${formatRate(p2)}`;
-      const liftNote = p1 === 0 ? ' Control rate is 0, so lift uses denominator 1 to avoid division by zero.' : '';
-      tileLift.setAttribute('data-tip', `Absolute lift (pp) = p2 - p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`);
-      tileSe.setAttribute('data-tip', `Relative increase = (p2 - p1) / p1. Control rate p1 = ${p1Text}, test rate p2 = ${p2Text}. Relative increase = ${formatPercent(lift)}.`);
+      const liftNote = p1 === 0 ? ` ${CONTROL_NAME} rate is 0, so lift uses denominator 1 to avoid division by zero.` : '';
+      tileLift.setAttribute('data-tip', `Absolute lift (pp) = p2 - p1. ${CONTROL_NAME} rate p1 = ${p1Text}, ${TEST_NAME} rate p2 = ${p2Text}. Lift = ${formatPP(delta)} (relative lift: ${formatPercent(lift)}).${liftNote}`);
+      tileSe.setAttribute('data-tip', `Relative increase = (p2 - p1) / p1. ${CONTROL_NAME} rate p1 = ${p1Text}, ${TEST_NAME} rate p2 = ${p2Text}. Relative increase = ${formatPercent(lift)}.`);
       if (tipLift) tipLift.setAttribute('data-tip', tileLift.getAttribute('data-tip') || '');
       if (tipRel) tipRel.setAttribute('data-tip', tileSe.getAttribute('data-tip') || '');
       if (relIcon) {
@@ -1961,29 +1889,25 @@
       commentary.classList.add('pulse');
 
       const shouldComputeBayes = source === 'user';
-      if (shouldComputeBayes) {
-        const priorErr = validatePriors();
-        if (priorErr) {
-          validation.textContent = priorErr;
-          return;
-        }
-        const pooledRate = (c1 + c2) / (n1 + n2);
-        const EB_PRIOR_STRENGTH = 20;
-        const priorN = EB_PRIOR_STRENGTH;
-        const priorRate = pooledRate;
-        const a = priorRate * priorN + 1;
-        const b = (1 - priorRate) * priorN + 1;
-        const a1 = a;
-        const b1 = b;
-        const a2 = a;
-        const b2 = b;
-        const postA1 = a1 + c1;
-        const postB1 = b1 + (n1 - c1);
-        const postA2 = a2 + c2;
-        const postB2 = b2 + (n2 - c2);
-        drawBayesPosterior(postA1, postB1, postA2, postB2, p1, p2);
+      const priorErr = validatePriors();
+      if (priorErr) {
+        validation.textContent = priorErr;
+        return;
+      }
+      renderBayesFromInputs(n1, c1, n2, c2);
+      const pooledRate = (c1 + c2) / (n1 + n2);
+      const EB_PRIOR_STRENGTH = 20;
+      const priorN = EB_PRIOR_STRENGTH;
+      const priorRate = pooledRate;
+      const a = priorRate * priorN + 1;
+      const b = (1 - priorRate) * priorN + 1;
+      const postA1 = a + c1;
+      const postB1 = b + (n1 - c1);
+      const postA2 = a + c2;
+      const postB2 = b + (n2 - c2);
 
-        const bayesKey = `${postA1.toFixed(3)}|${postB1.toFixed(3)}|${postA2.toFixed(3)}|${postB2.toFixed(3)}|${setup}`;
+      if (shouldComputeBayes) {
+        const bayesKey = `${postA1.toFixed(3)}|${postB1.toFixed(3)}|${postA2.toFixed(3)}|${postB2.toFixed(3)}`;
         if (bayesKey !== lastBayesKey) {
           const samples = 250000;
           let wins = 0;
@@ -2015,7 +1939,7 @@
         bayesRateLo = rateLo;
         bayesRateHi = rateHi;
         bayesInfo = lastBayesInfo ? { probPct: lastBayesInfo.probPct, rateLo: lastBayesInfo.rateLoPct, rateHi: lastBayesInfo.rateHiPct } : null;
-        tileZ.setAttribute('data-tip', `Bayesian: P(test > control) = ${(prob * 100).toFixed(1)}%. 95% credible Test rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
+        tileZ.setAttribute('data-tip', `Chance the ${TEST_NAME} wins over ${CONTROL_NAME} (posterior probability): ${(prob * 100).toFixed(1)}%. 95% credible ${TEST_NAME} rate: ${formatPercentValue(rateLo)} to ${formatPercentValue(rateHi)}.`);
         // Keep bar chart showing Significance (1 - p), not Bayesian probability.
         if (bayesCallout) {
           const calloutText = `${(prob * 100).toFixed(2)}% chance of improvement`;
@@ -2040,7 +1964,7 @@
         }
       }
 
-      commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, setup, bayesReady: shouldComputeBayes });
+      commentary.innerHTML = interpretSummary({ delta, lift, confidence, pValue, bayesInfo, bayesReady: shouldComputeBayes });
 
       buildNoiseBands(z);
       buildShade(z);
@@ -2062,12 +1986,6 @@
     }
 
     document.getElementById('calcBtn').addEventListener('click', () => calculateResults('user'));
-    setupInputs.forEach(input => {
-      input.addEventListener('change', () => {
-        validation.textContent = '';
-        updateSetupUI();
-      });
-    });
     [controlSize, controlConv, testSize, testConv].filter(Boolean).forEach(el => {
       el.addEventListener('input', () => {
         validation.textContent = '';
@@ -2082,11 +2000,16 @@
 
 
     buildCurve();
-    updateSetupUI();
     updateCurrencySymbol();
     initTipTargets();
     setModeUI();
     calculateResults('init');
+    renderBayesFromInputs(
+      Number(controlSize?.value),
+      Number(controlConv?.value),
+      Number(testSize?.value),
+      Number(testConv?.value)
+    );
 
     if (detailsToggle && analysisDetails) {
       detailsToggle.addEventListener('click', () => {
