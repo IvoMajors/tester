@@ -1132,6 +1132,7 @@
       const symbol = currency === 'EUR' ? '€' : (currency === 'GBP' ? '£' : '$');
       roiCurrencySymbol.textContent = symbol;
       if (roiValueSymbol) roiValueSymbol.textContent = symbol;
+      updateROI();
     }
 
     function setModeUI() {
@@ -2004,6 +2005,10 @@
     });
     [roiReach, roiCost, roiCurrency, roiValuePerSuccess].filter(Boolean).forEach(el => {
       el.addEventListener('input', () => {
+        validation.textContent = '';
+        updateCurrencySymbol();
+      });
+      el.addEventListener('change', () => {
         validation.textContent = '';
         updateCurrencySymbol();
       });
