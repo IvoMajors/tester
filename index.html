@@ -491,6 +491,38 @@
       transform: translateY(-1px);
     }
 
+    .results-actions {
+      margin-top: 12px;
+      padding: 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .action-btn.export {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      box-shadow: 0 10px 18px rgba(22, 163, 74, 0.22);
+    }
+
     .details-hidden {
       display: none;
     }
@@ -510,6 +542,7 @@
       font-size: 12px;
       color: var(--muted);
       margin-top: 16px;
+      text-align: center;
     }
 
     .tip-target:focus-visible {
@@ -658,6 +691,12 @@
             </div>
           </div>
           <div class="commentary" id="commentary">Enter your data and calculate to see interpretation.</div>
+          <div class="results-actions">
+            <button class="action-btn export" id="exportCsvBtn" type="button" aria-label="Export results to CSV">
+              <span aria-hidden="true">⬇</span>
+              <span>Export to CSV</span>
+            </button>
+          </div>
           <div class="chart-title">
             <h3>LIFT ANALYSIS</h3>
           </div>
@@ -973,6 +1012,7 @@
     const validation = document.getElementById('validation');
     const bayesFields = Array.from(document.querySelectorAll('.bayes-only'));
     const calcBtn = document.getElementById('calcBtn');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
     const liftEl = document.getElementById('lift');
     const seEl = document.getElementById('se');
     const relIcon = document.getElementById('relIcon');
@@ -1678,6 +1718,87 @@
       return '';
     }
 
+    function csvEscape(value) {
+      if (value === null || value === undefined) return '';
+      const str = String(value);
+      if (/[",\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
+      return str;
+    }
+
+    function buildExportRows() {
+      const rows = [];
+      const stamp = new Date().toISOString();
+      rows.push(['Exported At (UTC)', stamp]);
+
+      rows.push([]);
+      rows.push(['Study Inputs']);
+      rows.push(['Holdout Sample Size (n1)', controlSize?.value || '']);
+      rows.push(['Holdout Successes (x1)', controlConv?.value || '']);
+      rows.push(['Exposed Sample Size (n2)', testSize?.value || '']);
+      rows.push(['Exposed Successes (x2)', testConv?.value || '']);
+
+      rows.push([]);
+      rows.push(['Summary']);
+      rows.push(['Winner', tkWinner?.textContent?.trim() || '']);
+      rows.push(['Lift (pp)', tkLift?.textContent?.trim() || '']);
+      rows.push(['Significance', tkSig?.textContent?.trim() || '']);
+      rows.push(['P(Improvement)', tkChance?.textContent?.trim() || '']);
+      const summaryNotes = (commentary?.innerText || '')
+        .split('\n')
+        .map(line => line.replace(/\s+/g, ' ').trim())
+        .filter(Boolean);
+      if (summaryNotes.length) {
+        summaryNotes.forEach((line, idx) => {
+          rows.push([`Summary Note ${idx + 1}`, line]);
+        });
+      } else {
+        rows.push(['Summary Note 1', '']);
+      }
+
+      rows.push([]);
+      rows.push(['Lift Analysis']);
+      rows.push(['Observed Lift (Signal)', liftEl?.textContent?.trim() || '', 'percentage points']);
+      rows.push(['Relative Increase', seEl?.textContent?.trim() || '', 'percent']);
+      rows.push(['Signal-to-Noise (Z-Score)', zEl?.textContent?.trim() || '', 'standard deviations']);
+      rows.push(['Risk of Chance (P-Value)', pEl?.textContent?.trim() || '', 'two-tailed probability']);
+      rows.push([confidenceLabel?.textContent?.trim() || 'Significance', confidenceEl?.textContent?.trim() || '', confidenceUnit?.textContent?.trim() || '']);
+      rows.push(['Verdict', verdictEl?.textContent?.trim() || '', verdictUnit?.textContent?.trim() || '']);
+
+      rows.push([]);
+      rows.push(['ROI Modelling Inputs']);
+      rows.push(['Currency', roiCurrency?.value || '']);
+      rows.push(['Campaign Spend', roiCost?.value || '']);
+      rows.push(['Value per Success', roiValuePerSuccess?.value || '']);
+      rows.push(['Reach (people)', roiReach?.value || '']);
+
+      rows.push([]);
+      rows.push(['ROI Modelling']);
+      rows.push(['Observed Lift (pp)', roiLift?.textContent?.trim() || '', 'percentage points']);
+      rows.push(['Evidence Level', roiVerdict?.textContent?.trim() || '', roiVerdictUnit?.textContent?.trim() || '']);
+      rows.push(['Incremental Successes (lift)', roiIncr?.textContent?.trim() || '', 'people']);
+      rows.push(['Incremental Successes Range', roiRange?.textContent?.trim() || '', '95% range']);
+      rows.push(['Cost per Person Lifted', roiCpl?.textContent?.trim() || '', 'currency']);
+      rows.push(['Incremental Value', roiValueOut?.textContent?.trim() || '', 'currency']);
+      rows.push(['Estimated Lift ROI', roiTrue?.textContent?.trim() || '', 'percent']);
+
+      return rows;
+    }
+
+    function exportResultsCsv() {
+      const rows = buildExportRows();
+      const csv = rows.map(row => row.map(csvEscape).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const datePart = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = `tester-results-${datePart}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
     function renderBayesFromInputs(n1, c1, n2, c2, showPlaceholder = false) {
       const safeN1 = isFinite(n1) && n1 > 0 ? n1 : 500;
       const safeN2 = isFinite(n2) && n2 > 0 ? n2 : 500;
@@ -1998,6 +2119,9 @@
     }
 
     document.getElementById('calcBtn').addEventListener('click', () => calculateResults('user'));
+    if (exportCsvBtn) {
+      exportCsvBtn.addEventListener('click', exportResultsCsv);
+    }
     [controlSize, controlConv, testSize, testConv].filter(Boolean).forEach(el => {
       el.addEventListener('input', () => {
         validation.textContent = '';
